@@ -1,0 +1,47 @@
+
+
+.custom-control.ios-switch {
+    --color: #4cd964;
+    padding-left: 0; }
+    .custom-control.ios-switch .ios-switch-control-input {
+      display: none; }
+      .custom-control.ios-switch .ios-switch-control-input:active ~ .ios-switch-control-indicator::after {
+        width: 20px; }
+      .custom-control.ios-switch .ios-switch-control-input:checked ~ .ios-switch-control-indicator {
+        border: 10px solid var(--color); }
+        .custom-control.ios-switch .ios-switch-control-input:checked ~ .ios-switch-control-indicator::after {
+          top: -8px;
+          left: 4px; }
+      .custom-control.ios-switch .ios-switch-control-input:checked:active ~ .ios-switch-control-indicator::after {
+        left: 0px; }
+      .custom-control.ios-switch .ios-switch-control-input:disabled ~ .ios-switch-control-indicator {
+        opacity: .4; }
+    .custom-control.ios-switch .ios-switch-control-indicator {
+      display: inline-block;
+      position: relative;
+      margin: 0 10px;
+      top: 4px;
+      width: 32px;
+      height: 20px;
+      background: #fff;
+      border-radius: 16px;
+      -webkit-transition: .3s;
+      -o-transition: .3s;
+      transition: .3s;
+      border: 2px solid #ddd; }
+      .custom-control.ios-switch .ios-switch-control-indicator::after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border-radius: 16px;
+        -webkit-transition: .3s;
+        -o-transition: .3s;
+        transition: .3s;
+        top: 0px;
+        left: 0px;
+        background: #fff;
+        -webkit-box-shadow: 0 0 2px #aaa, 0 2px 5px #999;
+        box-shadow: 0 0 2px #aaa, 0 2px 5px #999; }
+  

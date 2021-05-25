@@ -19,7 +19,7 @@ def login():
         if user:
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
-                login_user(user, remember=True)
+                login_user(user)
                 return redirect(url_for("views.home"))
             else: 
                 flash('Incorrect password, try again.', category='error')
@@ -59,7 +59,7 @@ def signup():
             new_user = User(email=email, password=generate_password_hash(password, method="sha256") , fname=fname, lname=lname)
             db.session.add(new_user)
             db.session.commit()
-            login_user(new_user, remember=True)
+            login_user(new_user)
             flash('Account created with success!', category='success')
             return redirect(url_for("views.home"))
     return render_template("register.html")

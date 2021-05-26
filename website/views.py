@@ -4,10 +4,6 @@ from flask_login import login_required, current_user
 
 views = Blueprint("views", __name__)
 
-@views.route("/home")
-@login_required
-def home():
-    return render_template("home.html")
 
 @views.route("/dashboards")
 @login_required
@@ -28,4 +24,3 @@ def metrics():
 @login_required
 def help():
     return render_template("help.html")
-    

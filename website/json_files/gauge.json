@@ -1,0 +1,50 @@
+{
+"datasource": "fruit",
+"fieldConfig": {
+	"defaults": {
+	  "color": {
+		"mode": "thresholds"
+	  },
+	  "mappings": [],
+	  "thresholds": {
+		"mode": "absolute",
+		"steps": [
+		  {
+			"color": "green",
+			"value": null
+		  },
+		  {
+			"color": "red",
+			"value": 80
+		  }
+		]
+	  }
+	},
+	"overrides": []
+},
+"gridPos": {
+	"h": 8,
+	"w": 12,
+	"x": 0,
+	"y": 8
+},
+"id": 4,
+"options": {
+	"reduceOptions": {
+	  "calcs": [
+		"lastNotNull"
+	  ],
+	  "fields": "",
+	  "values": false
+	},
+	"showThresholdLabels": false,
+	"showThresholdMarkers": true,
+	"text": {}
+},
+"pluginVersion": "7.5.2",
+"targets": [],
+"timeFrom": null,
+"timeShift": null,
+"title": "",
+"type": "gauge"
+}

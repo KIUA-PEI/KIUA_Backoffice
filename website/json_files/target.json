@@ -1,0 +1,38 @@
+{
+    "groupBy": [
+      {
+        "params": [
+          "$__interval"
+        ],
+        "type": "time"
+      },
+      {
+        "params": [
+          "None"
+        ],
+        "type": "fill"
+      }
+    ],
+    "orderByTime": "ASC",
+    "policy": "default",
+    "query": "",
+    "queryType": "randomWalk",
+    "rawQuery": true,
+    "refId": "A",
+    "resultFormat": "time_series",
+    "select": [
+      [
+        {
+          "params": [
+            "value"
+          ],
+          "type": "field"
+        },
+        {
+          "params": [],
+          "type": "mean"
+        }
+      ]
+    ],
+    "tags": []
+  }

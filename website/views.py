@@ -1,29 +1,35 @@
 from flask import Blueprint
 from flask.templating import render_template
 from flask_login import login_required, current_user
-from flask import request, flash
+from flask import request, flash, redirect, url_for
+from website.Dashboard import *
 
 views = Blueprint("views", __name__)
 
 
-@views.route("/dashboards", methods=["GET", "POST"])
+@views.route("/dashboards", methods=["GET","POST"])
 @login_required
 def dashboards():
     if request.method == "POST":
         d = request.form.get("d")
-
-        print("Dash"+d)
+        
         if d == "":
             flash('Invalid Dashboard name', category='error')
             print("Here")
         else:
-            return render_template("createdashboards.html", dash = d)
+            return redirect(url_for('views.createdashboard', dname=d))
+
     return render_template("dashboards.html")
 
-@views.route("/createdashboard")
+@views.route("/createdashboard/<dname>", methods=["GET", "POST"])
 @login_required
-def createdashboards():
-    return render_template("createdashboards.html")
+def createdashboard(dname):
+    #Criar a dashboard
+    db = Dashboard(None, dname)
+    print("\n")
+    print(db.dash)
+    print("\n")
+    return render_template("createdashboards.html", dsh = dname)
 
 @views.route("/mymetrics")
 @login_required

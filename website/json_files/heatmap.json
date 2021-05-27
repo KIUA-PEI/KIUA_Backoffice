@@ -1,0 +1,99 @@
+{	
+"cards": {
+	"cardPadding": null,
+	"cardRound": null
+  },
+  "color": {
+	"cardColor": "#b4ff00",
+	"colorScale": "sqrt",
+	"colorScheme": "interpolateOranges",
+	"exponent": 0.5,
+	"mode": "spectrum"
+  },
+  "dataFormat": "timeseries",
+  "datasource": "fruit",
+  "fieldConfig": {
+	"defaults": {},
+	"overrides": []
+  },
+  "gridPos": {
+	"h": 8,
+	"w": 12,
+	"x": 12,
+	"y": 0
+  },
+  "heatmap": {},
+  "hideZeroBuckets": false,
+  "highlightCards": true,
+  "id": 5,
+  "legend": {
+	"show": false
+  },
+  "pluginVersion": "7.5.2",
+  "reverseYBuckets": false,
+  "targets": [
+	{
+	  "groupBy": [
+		{
+		  "params": [
+			"$__interval"
+		  ],
+		  "type": "time"
+		},
+		{
+		  "params": [
+			"None"
+		  ],
+		  "type": "fill"
+		}
+	  ],
+	  "orderByTime": "ASC",
+	  "policy": "default",
+	  "query": "SELECT * from f1;",
+	  "queryType": "randomWalk",
+	  "rawQuery": true,
+	  "refId": "A",
+	  "resultFormat": "time_series",
+	  "select": [
+		[
+		  {
+			"params": [
+			  "value"
+			],
+			"type": "field"
+		  },
+		  {
+			"params": [],
+			"type": "mean"
+		  }
+		]
+	  ],
+	  "tags": []
+	}
+  ],
+  "timeFrom": null,
+  "timeShift": null,
+  "title": "Panel2",
+  "tooltip": {
+	"show": true,
+	"showHistogram": false
+  },
+  "type": "heatmap",
+  "xAxis": {
+	"show": true
+  },
+  "xBucketNumber": null,
+  "xBucketSize": null,
+  "yAxis": {
+	"decimals": null,
+	"format": "short",
+	"logBase": 1,
+	"max": null,
+	"min": null,
+	"show": true,
+	"splitFactor": null
+  },
+  "yBucketBound": "auto",
+  "yBucketNumber": null,
+  "yBucketSize": null
+}

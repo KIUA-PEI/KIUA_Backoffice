@@ -1,0 +1,92 @@
+{
+  "datasource": "fruit",
+  "fieldConfig": {
+	"defaults": {
+	  "color": {
+		"mode": "thresholds"
+	  },
+	  "mappings": [],
+	  "thresholds": {
+		"mode": "absolute",
+		"steps": [
+		  {
+			"color": "green",
+			"value": null
+		  },
+		  {
+			"color": "red",
+			"value": 80
+		  }
+		]
+	  }
+	},
+	"overrides": []
+  },
+  "gridPos": {
+	"h": 8,
+	"w": 12,
+	"x": 12,
+	"y": 16
+  },
+  "id": 7,
+  "options": {
+	"colorMode": "value",
+	"graphMode": "area",
+	"justifyMode": "auto",
+	"orientation": "auto",
+	"reduceOptions": {
+	  "calcs": [
+		"lastNotNull"
+	  ],
+	  "fields": "",
+	  "values": false
+	},
+	"text": {},
+	"textMode": "auto"
+  },
+  "pluginVersion": "7.5.2",
+  "targets": [
+	{
+	  "groupBy": [
+		{
+		  "params": [
+			"$__interval"
+		  ],
+		  "type": "time"
+		},
+		{
+		  "params": [
+			"None"
+		  ],
+		  "type": "fill"
+		}
+	  ],
+	  "orderByTime": "ASC",
+	  "policy": "default",
+	  "query": "SELECT * from f1;",
+	  "queryType": "randomWalk",
+	  "rawQuery": true,
+	  "refId": "A",
+	  "resultFormat": "time_series",
+	  "select": [
+		[
+		  {
+			"params": [
+			  "value"
+			],
+			"type": "field"
+		  },
+		  {
+			"params": [],
+			"type": "mean"
+		  }
+		]
+	  ],
+	  "tags": []
+	}
+  ],
+  "timeFrom": null,
+  "timeShift": null,
+  "title": "Panel6",
+  "type": "stat"
+}

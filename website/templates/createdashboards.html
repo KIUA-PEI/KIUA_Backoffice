@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+
+  .column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+  }
+  
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
+  button.accordion {
+      background-color: #eee;
+      color: #444;
+      cursor: pointer;
+      padding: 0.7em;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 15px;
+      transition: 0.4s;
+  }
+  
+  button.accordion.active, button.accordion:hover {
+      background-color: #ddd;
+  }
+  
+  button.accordion:after {
+      content: '\02795';
+      font-size: 13px;
+      color: #777;
+      float: right;
+      margin-left: 5px;
+  }
+  
+  button.accordion.active:after {
+      content: "\2796";
+  }
+  
+  div.panel {
+      padding: 0 18px;
+      background-color: white;
+      max-height: 0;
+      overflow: hidden;
+      transition: 0.5s ease-in-out;
+      opacity: 0;
+  }
+  
+  div.panel.show {
+      opacity: 1;
+      max-height: 500px;  
+  }
+</style>
+  
+<div class="container">
+  <br>
+  
+
+  <div class="content">
+    <div class="row">
+      <div class="column">
+        <h2>Choose your metrics</h2>
+        <br>
+        
+        <button class="accordion">Metric 1</button>
+        <div class="panel">
+          <br>
+          <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+          <label for="vehicle1"> I have a bike</label><br>
+          <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
+          <label for="vehicle2"> I have a car</label><br>
+          <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
+          <label for="vehicle3"> I have a boat</label><br><br>
+        </div>
+        
+        <button class="accordion">Metric 2</button>
+        <div id="foo" class="panel">
+          <br>
+          <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+          <label for="vehicle1"> I have a bike</label><br>
+          <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
+          <label for="vehicle2"> I have a car</label><br>
+          <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
+          <label for="vehicle3"> I have a boat</label><br><br>
+        </div>
+
+        <button class="accordion">Metric 3</button>
+        <div id="foo" class="panel">
+          <br>
+          <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+          <label for="vehicle1"> I have a bike</label><br>
+          <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
+          <label for="vehicle2"> I have a car</label><br>
+          <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
+          <label for="vehicle3"> I have a boat</label><br><br>
+        </div>
+
+        <button class="accordion">Metric 4</button>
+        <div id="foo" class="panel">
+          <br>
+          <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+          <label for="vehicle1"> I have a bike</label><br>
+          <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
+          <label for="vehicle2"> I have a car</label><br>
+          <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
+          <label for="vehicle3"> I have a boat</label><br><br>
+        </div>
+        <br><br>
+        <input class="btn btn-primary" value="Add +" data-toggle="modal" data-target="#dashModal"style="float: right;">
+
+        <div class="modal fade" id="dashModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                  
+                  <form method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Name your panel</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    
+                    <div class="modal-body">
+                      <input type="text" id="d" name="d" placeholder="Panel name..">
+                      <br><br>
+                      <h5>Choose your panel type:</h5>
+                      <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+                      <label for="vehicle1"> Graph</label><br>
+                      <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
+                      <label for="vehicle2"> HeatMap</label><br>
+                      <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
+                      <label for="vehicle3"> Circular Chart</label><br><br>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <input class="btn btn-primary" type="submit" value="Create">
+                    </div>
+                  </form>
+
+              </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="column">
+        <h2>Your Dashboard</h2>
+        <br>
+        <div class="card">
+          <div class="card-header">{{dash}}</div>
+          <div class="card-body">
+            <p>fpd</p>
+            <p>fdp</p>
+            <p>fdp</p>
+          </div> 
+        </div>
+
+        <br><br>
+        <input class="btn btn-primary" value="Create" data-toggle="modal" style="float: right;">
+      </div>
+    </div>
+  
+        
+  
+  <br>
+  </div>
+<script>
+  var acc = document.getElementsByClassName("accordion");
+  var i;
+  
+  for (i = 0; i < acc.length; i++) {
+      acc[i].onclick = function(){
+          this.classList.toggle("active");
+          this.nextElementSibling.classList.toggle("show");
+    }
+  }
+  </script>
+{% endblock %}

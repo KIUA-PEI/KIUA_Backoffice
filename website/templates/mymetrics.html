@@ -4,5 +4,138 @@
 
 <p>página my metrics</p>
 
+
+<div class="container">
+    <br>
+    <div class="col-sm-3">
+        <h2>MyMetrics</h2>
+    </div>
+    <div class="content">
+        <div class="container">
+            <div class="col-sm-13" style="text-align: right;">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dashModal"><b>+</b></span> Add Metrics</button>
+            </div>
+                <!-- Metrics Modal-->
+            <div class="modal fade" id="dashModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Create new Metrics</h5>
+                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                          </button>
+                      </div>
+                      <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                      <div class="modal-footer">
+                          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                          <a class="btn btn-primary" href="/">Logout</a>
+                      </div>
+                  </div>
+              </div>
+            </div>
+            <br>
+    
+          <div class="table-responsive">
+    
+            <table class="table table-striped custom-table">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col" style="width: 120px;">Since</th>
+                  <th scope="col">Query Frequency</th>
+                  <th scope="col">Source Endpoint</th>
+                  <th scope="col">Edit</th>
+                  <th scope="col">Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+    
+                <tr>
+    
+                  <td>
+                    NumUsersAP
+                  </td>
+                  
+                  <td>12-04-2020</td>
+                  <td>
+                    <small class="d-block">1 hour</small>
+                  </td>
+                  <td><a href="/mymetrics">http://127.0.0.1:5000/MyMetrics</a></td>
+                  <td>
+                    <button type="button" class="btn fas fa-edit"></button>
+                </td>
+                <td>
+                    <button type="button" class="btn fas fa-trash-alt"></button>
+                </td>
+                </tr>
+                <tr>
+    
+                    <td>
+                      numDNSResolutions
+                    </td>
+                    
+                    <td>12-04-2020</td>
+                    <td>
+                      <small class="d-block">10 min</small>
+                    </td>
+                    <td><a href="/dashboards">http://127.0.0.1:5000/MyMetrics</a></td>
+                    <td>
+                        <button type="button" class="btn fas fa-edit"></button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn fas fa-trash-alt"></button>
+                    </td>
+                </tr>
+                <tr>
+    
+                    <td>
+                      metric3
+                    </td>
+                    
+                    <td>12-04-2020</td>
+                    </td>
+                    <td>
+                      <small class="d-block"> random time</small>
+                    </td>
+                    <td><a href="/dashboards">http://127.0.0.1:5000/MyMetrics</a></td>
+                    <td>
+                        <button type="button" class="btn fas fa-edit"></button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn fas fa-trash-alt"></button>
+                    </td>
+                </tr>
+    
+                <tr>
+    
+                    <td>
+                      metric4
+                    </td>
+                    
+                    <td>12-05-2021</td>
+                    </td>
+                    <td>
+                      <small class="d-block"> random time</small>
+                    </td>
+                    <td><a href="/dashboards">http://127.0.0.1:5000/MyMetrics</a></td>
+                    <td>
+                        <button type="button" class="btn fas fa-edit"></button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn fas fa-trash-alt"></button>
+                    </td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+    
+    
+        </div>
+    
+    <br>
+</div>
+
 {% endblock %}
 

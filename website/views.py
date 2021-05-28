@@ -77,6 +77,8 @@ def createdashboard(dname):
             db = Dashboard(None, dname)
             #Adicionar Painéis e querys
             db.add_query('Graph1', 'graph', ['SCP<3', 'SCP<3'])
+            #Enviar a dashboard para o servidor
+            db.send_dash()
 
             print("\n")
             print(db.dash)

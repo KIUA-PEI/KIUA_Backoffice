@@ -2,143 +2,130 @@
 
 {% block content %}
 
-  
+
 <div class="container">
   <br>
-  
+
 
   <div class="content">
     <div class="row">
       <div class="column">
         <h2>Choose your metrics</h2>
         <br>
-        
-        <button class="accordion">Metric 1</button>
-        <div class="panel">
-          <br>
-          <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-          <label for="vehicle1"> I have a bike</label><br>
-          <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
-          <label for="vehicle2"> I have a car</label><br>
-          <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
-          <label for="vehicle3"> I have a boat</label><br><br>
-        </div>
-        
-        <button class="accordion">Metric 2</button>
-        <div id="foo" class="panel">
-          <br>
-          <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-          <label for="vehicle1"> I have a bike</label><br>
-          <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
-          <label for="vehicle2"> I have a car</label><br>
-          <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
-          <label for="vehicle3"> I have a boat</label><br><br>
-        </div>
 
-        <button class="accordion">Metric 3</button>
-        <div id="foo" class="panel">
-          <br>
-          <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-          <label for="vehicle1"> I have a bike</label><br>
-          <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
-          <label for="vehicle2"> I have a car</label><br>
-          <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
-          <label for="vehicle3"> I have a boat</label><br><br>
-        </div>
-
-        <button class="accordion">Metric 4</button>
-        <div id="foo" class="panel">
-          <br>
-          <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-          <label for="vehicle1"> I have a bike</label><br>
-          <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
-          <label for="vehicle2"> I have a car</label><br>
-          <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
-          <label for="vehicle3"> I have a boat</label><br><br>
-        </div>
-        <br><br>
-        <button class="btn btn-primary" data-toggle="modal" data-target="#dashModal"style="float: right;">Add +</button>
-
-        <div class="modal fade" id="dashModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                  
-                  <form method="POST">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Name your panel</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    
-                    <div class="modal-body">
-                      <input type="text" id="d" name="d" placeholder="Panel name..">
-                      <br><br>
-                      <h5>Choose your panel type:</h5>
-                      <input type="checkbox" name="check" onclick="onlyOne(this)">
-                      <label for="vehicle1"> Graph</label><br>
-                      <input type="checkbox" name="check" onclick="onlyOne(this)">
-                      <label for="vehicle2"> HeatMap</label><br>
-                      <input type="checkbox" name="check" onclick="onlyOne(this)">
-                      <label for="vehicle3"> PieChart</label><br>
-                      <input type="checkbox" name="check" onclick="onlyOne(this)">
-                      <label for="vehicle3"> Gauge</label><br>
-                      <input type="checkbox" name="check" onclick="onlyOne(this)">
-                      <label for="vehicle3"> BarGauge</label><br>
-                      <input type="checkbox" name="check" onclick="onlyOne(this)">
-                      <label for="vehicle3"> Stat</label>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <button class="btn btn-primary" type="submit" value="Create">Create</button>
-                    </div>
-                  </form>
-
-              </div>
+        <!--FORM - Coluna do lado Esquerdo-->
+        <form method="POST">
+          <button type="button" class="accordion">Metric 1</button>
+          <div class="panel">
+            <br>
+            <input type="checkbox" id="m1" name="m1" value="Bike">
+            <label for="vehicle1"> I have a bike</label><br>
+            <input type="checkbox" id="m1" name="m1" value="Car">
+            <label for="vehicle2"> I have a car</label><br>
+            <input type="checkbox" id="m1" name="m1" value="Boat">
+            <label for="vehicle3"> I have a boat</label><br><br>
           </div>
-        </div>
+
+          <button type="button" class="accordion">Metric 4</button>
+          <div id="foo" class="panel">
+            <br>
+            <input type="checkbox" id="m2" name="m2" value="Bike">
+            <label for="vehicle1"> I have a bike</label><br>
+            <input type="checkbox" id="m2" name="m2" value="Car">
+            <label for="vehicle2"> I have a car</label><br>
+            <input type="checkbox" id="m2" name="m2" value="Boat">
+            <label for="vehicle3"> I have a boat</label><br><br>
+          </div>
+          <br><br>
+
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dashModal" style="float: right;">Add+</button>
+          
+          <!--Modal para fazer submit das preferências para criar uma dashboard-->
+          <div class="modal fade" id="dashModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Name your panel</h5>
+                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+
+                <div class="modal-body">
+                  <input type="text" id="panelname" name="panelname" placeholder="Panel name..">
+                  <br><br>
+                  <h5>Choose your panel type:</h5>
+                  <input type="checkbox" name="check" value="graph" onclick="onlyOne(this)">
+                  <label for="vehicle1"> Graph</label><br>
+                  <input type="checkbox" name="check" value="heat" onclick="onlyOne(this)">
+                  <label for="vehicle2"> HeatMap</label><br>
+                  <input type="checkbox" name="check" value="pie" onclick="onlyOne(this)">
+                  <label for="vehicle3"> PieChart</label><br>
+                  <input type="checkbox" name="check" value="gauge" onclick="onlyOne(this)">
+                  <label for="vehicle3"> Gauge</label><br>
+                  <input type="checkbox" name="check" value="bargauge" onclick="onlyOne(this)">
+                  <label for="vehicle3"> BarGauge</label><br>
+                  <input type="checkbox" name="check" value="stat" onclick="onlyOne(this)">
+                  <label for="vehicle3"> Stat</label>
+                </div>
+
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                  <button class="btn btn-primary" type="submit" name="create" value="CreatePanel">Create</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
 
-
+      <!--FORM - Coluna Lado direito-->
       <div class="column">
         <h2>Your Dashboard</h2>
         <br>
         <div class="card">
           <div class="card-header">Dashboard Name: {{dsh}}</div>
           <div class="card-body">
-            <p>fpd</p>
-            <p>fdp</p>
-            <p>fdp</p>
-          </div> 
+            {%if pname is none %}
+              <p></p>
+            {% else %}
+              {% for i in range(0, pname|length) %}
+                <h5>{{pname[i]}}</h5><h6>{{ptype[i]}}</h6>
+              {% endfor %}
+            {% endif %}
+            
+          </div>
         </div>
 
         <br><br>
-        <button class="btn btn-primary" data-toggle="modal" style="float: right;">Create</button>
-      </div>
+        <form>
+          <button class="btn btn-primary" type="submit" name="dash" value="CreateDash" style="float: right;">Create</button>
+        </form>
+        </div>
     </div>
-  
-        
-  
-  <br>
+
+
+
+    <br>
   </div>
-<script>
-  var acc = document.getElementsByClassName("accordion");
-  var i;
-  
-  for (i = 0; i < acc.length; i++) {
-      acc[i].onclick = function(){
-          this.classList.toggle("active");
-          this.nextElementSibling.classList.toggle("show");
+  <script>
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+      acc[i].onclick = function () {
+        this.classList.toggle("active");
+        this.nextElementSibling.classList.toggle("show");
+      }
     }
-  }
 
 
-  function onlyOne(checkbox) {
-    var checkboxes = document.getElementsByName('check')
-    checkboxes.forEach((item) => {
+    function onlyOne(checkbox) {
+      var checkboxes = document.getElementsByName('check')
+      checkboxes.forEach((item) => {
         if (item !== checkbox) item.checked = false
-    })
-}
+      })
+    }
   </script>
-{% endblock %}
+  {% endblock %}

@@ -15,7 +15,7 @@ class Dashboard:
     def __init__(self, uid = None, dname="Dashboard"):
         #pesquisar dname da db de dashboards, obter uid 
         if uid == None: #if dnam not in db
-            with open('/home/joao/Documents/Universidade/3ºAno/PEI/KIUA/KIUA_Backoffice/website/json_files/dashboard.json') as f:
+            with open('./website/json_files/dashboard.json') as f:
                 self.dash = json.load(f)
                 self.dash['dashboard']['title'] = dname
         else: #get uid associa ao dname
@@ -68,7 +68,7 @@ class Dashboard:
 
 
     def add_panel(self, pname, ptype):
-        with open('json_files/'+ptype+'.json') as f:
+        with open('./website/json_files/'+ptype+'.json') as f:
             p = json.load(f)
         p['title'] = pname
         self.dash['dashboard']['panels'].append(p)
@@ -85,7 +85,7 @@ class Dashboard:
         targets = []
 
         for q in query_list:
-            with open('json_files/target.json') as f:
+            with open('./website/json_files/target.json') as f:
                 target = json.load(f)
             target['query'] = q
             targets.append(target)

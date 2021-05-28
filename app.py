@@ -2,23 +2,5 @@ from website import create_app
 
 app = create_app()
 
-# app = Flask(__name__)
-
-# @app.route('/')
-# def login():
-#     return render_template("index.html")
-
-# @app.route('/register')
-# def register():
-#     return render_template("register.html")
-
-# @app.route('/home')
-# def home():
-#     return render_template("home.html")
-
-# @app.route('/dashboards')
-# def dashboards():
-#     return render_template("dashboards.html")
-
 if __name__ == "__main__":
     app.run(debug=True)

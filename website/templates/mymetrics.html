@@ -5,19 +5,21 @@
 
 <div class="container">
     <br>
-    <div class="col-sm-3">
-        <h2>MyMetrics</h2>
-    </div>
     <div class="content">
         <div class="container">
-            <div class="col-sm-13" style="text-align: right;">
+          <div class="row">
+            <div class="col-sm-3 justify-content-left" style="text-align: left;">
+              <h2>MyMetrics</h2>
+            </div>
+
+            <div class="col-sm-9 justify-content-right" style="text-align: right;">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dashModal"><b>+</b></span> Add Metrics</button>
             </div>
+          </div>
                 <!-- Metrics Modal-->
                 <div class="modal fade" id="dashModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
                       <div class="modal-content">
-                          
                           <form method="POST">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">Add your Metric</h5>
@@ -31,7 +33,7 @@
                             </div>
 
                             <hr class="sidebar-divider my-0">
-                            <h6 class="modal-title" style="padding: 14px;" id="exampleModalLabel">Query Frequency</h6>
+                            <h6 class="modal-title pb-0" style="padding: 14px;" id="exampleModalLabel">Query Frequency</h6>
                             <div class="modal-body">
                               <select name="dropdown-metrics" style="opacity: 70%; width: 200px;" id="dropdown-id">
                                 <option value="hora-a-hora">de hora a hora</option>
@@ -40,7 +42,7 @@
                               </select>
                             </div>
                             <hr class="sidebar-divider my-0">
-                            <h6 class="modal-title" style="padding: 14px;" id="exampleModalLabel">Source Endpoint</h6>
+                            <h6 class="modal-title pb-0" style="padding: 14px;" id="exampleModalLabel">Source Endpoint</h6>
                             <div class="modal-body">
                               <input type="url" id="d" name="d" style="opacity: 70%; width: 300px;">
                             </div>

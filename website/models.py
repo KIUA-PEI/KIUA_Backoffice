@@ -1,10 +1,4 @@
 
-from datetime import timezone
-from enum import unique
-
-from sqlalchemy.orm import backref
-from sqlalchemy.sql.sqltypes import ARRAY
-from website.views import dashboards
 from website import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
@@ -31,6 +25,8 @@ class Dashboard(db.Model):
     uid = db.Column(db.Integer, unique=True)
     # data criação
     date = db.Column(db.DateTime(timezone=True), default=func.now())
+    # small description
+    description = db.Column(db.String(250))
     visibilidade = db.Column(db.Integer, nullable=False) # 0 -> privada, 1 -> pública
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     panels = db.relationship("Panels", backref="dashboard", lazy=True)
@@ -42,7 +38,20 @@ class Panels(db.Model):
     kpi = db.Column(MutableList.as_mutable(PickleType)) # lista com o nome dos kpi que o utilizador selecionou na checkbox
     dashboard_id = db.Column(db.Integer, db.ForeignKey("dashboard.id"), nullable=False)
 
-# -----
+## ----------
+# métricas default do website
+class Metrics(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    kpis = db.relationship("Kpi", backref="metrics", lazy=True)
+
+
+class Kpi(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column((db.String(100)))
+    metrica_id = db.Column(db.Integer, db.ForeignKey("metrics.id"), nullable=False)
+
+## ------------
 
 class Basic_url(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -12,11 +12,14 @@ def create_app():
     app.config["SECRET_KEY"] = 'nvqieigbejbribgrbrkgbrkbdkbjndimowpqlsqks'
     app.config["SQLALCHEMY_DATABASE_URI"] = f'sqlite:///{DB_NAME}'
     db.init_app(app)
+    
 
     from .views import views
     from .auth import  auth
+    from .test import test
     app.register_blueprint(views, url_prefix="/")
     app.register_blueprint(auth, url_prefix="/")
+    app.register_blueprint(test, url_profix="/test")
 
     from .models import User
     create_database(app)
@@ -35,3 +38,7 @@ def create_database(app):
     if not path.exists("website/" + DB_NAME):
         db.create_all(app=app)
         print("\t -> Created db! <-")
+
+        
+
+        

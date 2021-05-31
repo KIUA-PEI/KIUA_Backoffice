@@ -4,7 +4,7 @@
 	"bars": false,
 	"dashLength": 10,
 	"dashes": false,
-	"datasource": "fruit",
+	"datasource": "InfluxDB",
 	"fieldConfig": {
 		"defaults": {},
 		"overrides": []

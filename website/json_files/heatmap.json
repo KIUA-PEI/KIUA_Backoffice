@@ -11,7 +11,7 @@
 	"mode": "spectrum"
   },
   "dataFormat": "timeseries",
-  "datasource": "fruit",
+  "datasource": "InfluxDB",
   "fieldConfig": {
 	"defaults": {},
 	"overrides": []

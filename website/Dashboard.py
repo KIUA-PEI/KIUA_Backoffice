@@ -1,8 +1,8 @@
+from website.config import *
 import requests
 import json
 
-server = "http://localhost:3000"
-api_key = "eyJrIjoiV3ZYWUQzdVlFc0Zhc25XZllLVGVWdVVoNlowbnYwQWMiLCJuIjoicHl0aG9ua2V5IiwiaWQiOjJ9"
+
 headers = {
     "Authorization" : "Bearer "+api_key,
     "Content-Type": "application/json",
@@ -71,6 +71,10 @@ class Dashboard:
         with open('./website/json_files/'+ptype+'.json') as f:
             p = json.load(f)
         p['title'] = pname
+        npnl = len(self.dash['dashboard']['panels'])
+        p['gridPos']['y'] = 8*(npnl//2)
+        if npnl % 2 != 0:
+            p['gridPos']['x'] = 12
         self.dash['dashboard']['panels'].append(p)
         return 1
 

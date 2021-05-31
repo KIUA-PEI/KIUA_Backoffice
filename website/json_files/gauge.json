@@ -1,5 +1,5 @@
 {
-"datasource": "fruit",
+"datasource": "InfluxDB",
 "fieldConfig": {
 	"defaults": {
 	  "color": {

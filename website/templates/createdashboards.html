@@ -27,26 +27,26 @@
 
         <!--FORM - Coluna do lado Esquerdo-->
         <form method="POST">
-          <button type="button" class="accordion">Metric 1</button>
+          <button type="button" class="accordion">Parkings</button>
           <div class="panel">
             <br>
-            <input type="checkbox" id="m1" name="m1" value="Bike">
-            <label for="vehicle1"> I have a bike</label><br>
-            <input type="checkbox" id="m1" name="m1" value="Car">
-            <label for="vehicle2"> I have a car</label><br>
-            <input type="checkbox" id="m1" name="m1" value="Boat">
-            <label for="vehicle3"> I have a boat</label><br><br>
+            <input type="checkbox" id="m1" name="m1" value="SELECT Capacidade, Livres FROM parking WHERE Nome = 'Biblioteca' AND $timeFilter">
+            <label for="vehicle1"> Free parkings in the library</label><br>
+            <input type="checkbox" id="m1" name="m1" value="SELECT Capacidade, Ocupado FROM parking WHERE Nome = 'Biblioteca' AND $timeFilter">
+            <label for="vehicle2"> Occupied parkings in the library</label><br>
+            <input type="checkbox" id="m1" name="m1" value="SCP<3">
+            <label for="vehicle3"> Query 4 </label><br><br>
           </div>
 
-          <button type="button" class="accordion">Metric 4</button>
+          <button type="button" class="accordion">Wifi Devices</button>
           <div id="foo" class="panel">
             <br>
-            <input type="checkbox" id="m2" name="m2" value="Bike">
-            <label for="vehicle1"> I have a bike</label><br>
-            <input type="checkbox" id="m2" name="m2" value="Car">
-            <label for="vehicle2"> I have a car</label><br>
-            <input type="checkbox" id="m2" name="m2" value="Boat">
-            <label for="vehicle3"> I have a boat</label><br><br>
+            <input type="checkbox" id="m1" name="m1" value="SELECT sum(wifiCount) as TotalUsers FROM wifiusr WHERE $timeFilter GROUP BY time(1h) fill(null)">
+            <label for="vehicle1"> Total devices connected to ua</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersBiblioteca FROM wifiusr WHERE Nome = 'biblioteca' AND $timeFilter">
+            <label for="vehicle2"> Users connected to library wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= 'SCP<3'>
+            <label for="vehicle3"> Query 3</label><br><br>
           </div>
           <br><br>
 
@@ -70,9 +70,9 @@
                   <h5>Choose your panel type:</h5>
                   <input type="checkbox" name="check" value="graph" onclick="onlyOne(this)">
                   <label for="vehicle1"> Graph</label><br>
-                  <input type="checkbox" name="check" value="heat" onclick="onlyOne(this)">
+                  <input type="checkbox" name="check" value="heatmap" onclick="onlyOne(this)">
                   <label for="vehicle2"> HeatMap</label><br>
-                  <input type="checkbox" name="check" value="pie" onclick="onlyOne(this)">
+                  <input type="checkbox" name="check" value="piechart" onclick="onlyOne(this)">
                   <label for="vehicle3"> PieChart</label><br>
                   <input type="checkbox" name="check" value="gauge" onclick="onlyOne(this)">
                   <label for="vehicle3"> Gauge</label><br>

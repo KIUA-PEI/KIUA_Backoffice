@@ -6,13 +6,14 @@ from website.Dashboard import *
 views = Blueprint("views", __name__)
 
 
-pnamelist = []
-ptypelist = []
-
 #MyDashboards Page
 @views.route("/dashboards", methods=["GET","POST"])
 @login_required
 def dashboards():
+
+    session['pnamelist'] = []
+    session['ptypelist'] = []
+    session['querylist'] = []
 
     if request.method == "POST":
         d = request.form.get("d")
@@ -35,57 +36,85 @@ def createdashboard(dname):
         if request.form.get('create') == 'CreatePanel':
 
             query1 = request.form.getlist("m1")
-            query2 = request.form.getlist("m2")
             #Caso não sejam dadas métricas/indicadores -> ERRO
-            if query1 == [] and query2 == []:
+            if query1 == []:
                 flash('ERROR: No metrics were choosen for the graph', category='error')
-                return render_template("createdashboards.html", dsh = dname, pname=pnamelist, ptype=ptypelist)
+                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
             
             panelname = request.form.get("panelname")
             #Caso o nome do painel seja inválido -> ERRO
             if panelname == "":
                 flash('ERROR: Invalid panel name', category='error')
-                return render_template("createdashboards.html", dsh = dname, pname=pnamelist, ptype=ptypelist)
+                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
             #Caso o nome do painel já tenha sido usado -> ERRO
-            elif panelname in pnamelist:
+            elif panelname in session.get('pnamelist'):
                 flash('ERROR: Panel name was already used', category='error')
-                return render_template("createdashboards.html", dsh = dname, pname=pnamelist, ptype=ptypelist)
+                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
             
             paneltype = request.form.getlist("check")
             #Caso não seja fornecido tipo do painel -> ERRO
             if paneltype == []:
                 flash('ERROR: Graph type was not indicated', category='error')
-                return render_template("createdashboards.html", dsh = dname, pname=pnamelist, ptype=ptypelist)
+                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
             
-            print(str(query1) + str(query2))
-            print(panelname)
-            print(paneltype)
 
-            pnamelist.append(panelname)
-            ptypelist.append(paneltype)
-            return render_template("createdashboards.html", dsh = dname, pname=pnamelist, ptype=ptypelist)
+
+            #Adicionar nome dos paineis à lista de paineis adicionados até ao momento
+            if 'pnamelist' in session:
+                session['pnamelist'] = session.get('pnamelist')
+            else:
+                session['pnamelist'] = []
+            session['pnamelist'].append(panelname)
+            #Adicionar tipo de painel à lista de tipos adicionados até ao momento
+            if 'ptypelist' in session:
+                session['ptypelist'] = session.get('ptypelist')
+            else:
+                session['ptypelist'] = []
+            session['ptypelist'].append(paneltype[0])
+            #Adicionar querys à lista de querys adicionados até ao momento
+            if 'querylist' in session:
+                session['querylist'] = session.get('querylist')
+            else:
+                session['querylist'] = []
+            if query1:
+                session['querylist'].append(query1)
+            
+            print(session['pnamelist'])
+            print(session['ptypelist'])
+            print(session['querylist'])
+
+            return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
     
     elif request.method == "GET":
         if request.args.get('dash', '') == 'CreateDash':
             
             #Caso tente criar uma dashboard sem ter especificado suas defenições -> ERRO
-            if pnamelist == [] and ptypelist == []:
+            if session.get('pnamelist') == [] and session.get('ptypelist') == []:
                 flash('ERROR: Dashboard especifications were not indicated', category='error')
                 return render_template("createdashboards.html", dsh = dname, pname=pnamelist, ptype=ptypelist)
             
             #Criar dashboard
             db = Dashboard(None, dname)
+            pnl = session.get('pnamelist')
+            ptl = session.get('ptypelist')
+            ql = session.get('querylist')
             #Adicionar Painéis e querys
-            db.add_query('Graph1', 'graph', ['SCP<3', 'SCP<3'])
+            for i in range(0, len(session.get('pnamelist'))):
+                db.add_query(pnl[i], ptl[i], ql[i])
             #Enviar a dashboard para o servidor
             db.send_dash()
 
+            print(session['pnamelist'])
+            print(session['ptypelist'])
             print("\n")
-            print(db.dash)
+            print(json.dumps(db.dash))
             print("\n")
             
-            pnamelist.clear()
-            ptypelist.clear()
+            #Limpar dados da criação da dashboard
+            session['pnamelist'] = []
+            session['ptypelist'] = []
+            session['querylist'] = []
+
             return render_template("dashboards.html")
     return render_template("createdashboards.html", dsh = dname, pname=None, ptype=None)
 

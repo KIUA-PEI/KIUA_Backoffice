@@ -1,5 +1,5 @@
 {
-  "datasource": "fruit",
+  "datasource": "-- Grafana --",
   "fieldConfig": {
 	"defaults": {
 	  "color": {

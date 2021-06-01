@@ -41,12 +41,90 @@
                                 <option value="30-em-30-minutos">de 30 em 30 minutos</option>
                               </select>
                             </div>
+
                             <hr class="sidebar-divider my-0">
                             <h6 class="modal-title pb-0" style="padding: 14px;" id="exampleModalLabel">Source Endpoint</h6>
                             <div class="modal-body">
                               <input type="url" id="d" name="d" style="opacity: 70%; width: 300px;">
                             </div>
+
+                            <hr class="sidebar-divider my-0">
+                            <h6 class="modal-title pb-0" style="padding: 14px;" id="exampleModalLabel">Authentication</h6>
+                            <div class="modal-body">
+
+                              <select name="dropdown-metrics" style="opacity: 70%; width: 300px;" id="dropdown-id-authentication" onchange="changeStatus()">
+                                <option value="" disabled selected hidden>public api</option>
+                                <option value="key-based-authentication">key based authentication</option>
+                                <option value="bearer-token-based-authentication">bearer token based authentication</option>
+                                <option value="http-authentication">http authentication</option>
+                              </select>
+                              
+                              <div id="key-based-auth" hidden>  
+                                <hr class="sidebar-divider my-0">
+                                <h6 class="modal-title pb-0" id="exampleModalLabel">Key</h6>
+                                <div class="modal-body">
+                                  <input type="password" id="d" name="d" style="opacity: 70%; width: 300px;">
+                                </div>
+
+                                <hr class="sidebar-divider my-0">
+                                <h6 class="modal-title pb-0" id="exampleModalLabel">Fields</h6>
+                                <div class="modal-body" >
+                                  <input type="text" id="d" name="d" style="opacity: 70%; width: 300px;">
+                                </div>
+                              </div>
+
+                              <div id="bearer-token-based-authentication" hidden>  
+                                <hr class="sidebar-divider my-0">
+                                <h6 class="modal-title pb-0" id="exampleModalLabel">Token Url</h6>
+                                <div class="modal-body">
+                                  <input type="url" id="d" name="d" style="opacity: 70%; width: 300px;">
+                                </div>
+                                <hr class="sidebar-divider my-0">
+                                <h6 class="modal-title pb-0" id="exampleModalLabel">Consumer Key</h6>
+                                <div class="modal-body">
+                                  <input type="password" id="d" name="d" style="opacity: 70%; width: 300px;">
+                                </div>
+                                <hr class="sidebar-divider my-0">
+                                <h6 class="modal-title pb-0" id="exampleModalLabel">Consumer Secret</h6>
+                                <div class="modal-body">
+                                  <input type="password" id="d" name="d" style="opacity: 70%; width: 300px;">
+                                </div>
+                              </div>
+
+                              <div id="http-authentication" hidden>  
+                                <hr class="sidebar-divider my-0">
+                                <h6 class="modal-title pb-0" id="exampleModalLabel">Email</h6>
+                                <div class="modal-body">
+                                  <input type="email" id="d" name="d" style="opacity: 70%; width: 300px;">
+                                </div>
+                                <hr class="sidebar-divider my-0">
+                                <h6 class="modal-title pb-0" id="exampleModalLabel">password</h6>
+                                <div class="modal-body">
+                                  <input type="password" id="d" name="d" style="opacity: 70%; width: 300px;">
+                                </div>
+                              </div>
+
+                              <script>
+                                function changeStatus(){
+                                  var status = document.getElementById("dropdown-id-authentication");
+
+                                  if(status.value=="key-based-authentication"){
+                                    document.getElementById("key-based-auth").removeAttribute("hidden");
+
+                                  } else if(status.value=="bearer-token-based-authentication"){
+                                    document.getElementById("bearer-token-based-authentication").removeAttribute("hidden");
+
+                                  } else if(status.value=="http-authentication"){
+                                    document.getElementById("http-authentication").removeAttribute("hidden");
+                                  }
+                                  
+                                }
+
+                              </script>
+
+                            </div>
                             <div class="modal-footer">
+                                <button class="btn btn-secondary mr-auto" type="button" data-dismiss="modal">Help</button>
                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                                 <button class="btn btn-primary" name="createbtn" value="btn" method="post" type="submit">Create</button>
                             </div>

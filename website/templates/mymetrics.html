@@ -3,6 +3,29 @@
 {% block content %}
 
 
+<script>
+  function changeStatus(){
+    var status = document.getElementById("dropdown-id-authentication");
+
+    if(status.value=="key-based-authentication"){
+      document.getElementById("key-based-auth").toggleAttribute("hidden");
+      document.getElementById("bearer-token-based-authentication").setAttribute("hidden",true);
+      document.getElementById("http-authentication").setAttribute("hidden",true);
+
+    } else if(status.value=="bearer-token-based-authentication"){
+      document.getElementById("bearer-token-based-authentication").toggleAttribute("hidden");
+      document.getElementById("key-based-auth").setAttribute("hidden",true);
+      document.getElementById("http-authentication").setAttribute("hidden",true);
+
+    } else if(status.value=="http-authentication"){
+      document.getElementById("http-authentication").toggleAttribute("hidden");
+      document.getElementById("key-based-auth").setAttribute("hidden",true);
+      document.getElementById("bearer-token-based-authentication").setAttribute("hidden",true);
+    }
+  }
+
+</script>
+
 <div class="container">
     <br>
     <div class="content">
@@ -103,24 +126,6 @@
                                   <input type="password" id="d" name="d" style="opacity: 70%; width: 300px;">
                                 </div>
                               </div>
-
-                              <script>
-                                function changeStatus(){
-                                  var status = document.getElementById("dropdown-id-authentication");
-
-                                  if(status.value=="key-based-authentication"){
-                                    document.getElementById("key-based-auth").removeAttribute("hidden");
-
-                                  } else if(status.value=="bearer-token-based-authentication"){
-                                    document.getElementById("bearer-token-based-authentication").removeAttribute("hidden");
-
-                                  } else if(status.value=="http-authentication"){
-                                    document.getElementById("http-authentication").removeAttribute("hidden");
-                                  }
-                                  
-                                }
-
-                              </script>
 
                             </div>
                             <div class="modal-footer">

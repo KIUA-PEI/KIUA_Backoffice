@@ -20,6 +20,9 @@ class User(db.Model, UserMixin):
     http = db.relationship("Http_url", backref="user", lazy=True)
     token = db.relationship("Token_url", backref="user", lazy=True)
 
+    def __repr__(self):
+        return "id: " + str(self.id) + ", email: " + self.email + ", " + self.fname + " " + self.lname
+
 class Dashboard(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     uid = db.Column(db.Integer, unique=True)
@@ -28,8 +31,12 @@ class Dashboard(db.Model):
     # small description
     description = db.Column(db.String(250))
     visibilidade = db.Column(db.Integer, nullable=False) # 0 -> privada, 1 -> pública
+    url = db.Column(db.String(150), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     panels = db.relationship("Panels", backref="dashboard", lazy=True)
+
+    def __repr__(self):
+        return "id: " + str(self.id) + "uid: " + str(self.uid) + "date: " + str(self.date) + "url: " + str(self.url) + ", user_id: " + str(self.user_id)
 
 
 # cada gráfico de uma dashboard

@@ -51,16 +51,16 @@
               </tr>
             </thead>
             <tbody>
-              {%for dash in db%}
+              {%for dash in current_user.dashboards %}
                 <tr>
                   <td>
-                    {{dash.dname}}
+                    {{dash.nome}}
                   </td>
                   <td>{{dash.date}}</td>
                   
                   <td class="pl-0">
                     <div class="d-flex align-items-center">
-                      {% if dash.visibility == "Public" %}
+                      {% if dash.visibility == 1 %}
                         <i class='fas fa-users' style='font-size:22px'></i>
                       {% else %}
                         <i class='fas fa-user-alt' style='font-size:22px'></i>
@@ -69,11 +69,15 @@
                       <input type="checkbox" class="ios-switch-control-input" checked="">
                       <span class="ios-switch-control-indicator"></span>
                       </label>
-                      {{dash.visibility}} 
+                      {% if dash.visibility == 1 %}
+                        <p>Public</p>
+                      {% else %}
+                        <p>Private</p>
+                      {% endif%}
                     </div>
                   </td>
                   
-                  <td><a href="{{dash.link}}" target="_blank">{{dash.link}}</a></td>
+                  <td><a href="{{ dash.url }}" target="_blank">{{dash.url}}</a></td>
                 </tr>
               {% endfor %}
             </tbody>

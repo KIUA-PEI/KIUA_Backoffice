@@ -3,11 +3,12 @@ from flask.templating import render_template
 from flask_login import login_required, current_user
 from website.Dashboard import *
 from website.DashTmp import *
+from website.models import Dashboard as Dash
 import datetime
+from . import db
 
 views = Blueprint("views", __name__)
 
-database = []
 #d = DashTmp("Dashboard1", datetime.datetime.now(), 'Public', "http://127.0.0.1:5000/dashboards")
 
 
@@ -29,7 +30,7 @@ def dashboards():
         else:
             return redirect(url_for('views.createdashboard', dname=d))
 
-    return render_template("dashboards.html", db=database)
+    return render_template("dashboards.html")
 
 
 #Create Dashboard Page
@@ -97,26 +98,27 @@ def createdashboard(dname):
             #Caso tente criar uma dashboard sem ter especificado suas defenições -> ERRO
             if session.get('pnamelist') == [] and session.get('ptypelist') == []:
                 flash('ERROR: Dashboard especifications were not indicated', category='error')
-                return render_template("createdashboards.html", dsh = dname, pname=pnamelist, ptype=ptypelist)
+                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
             
             #Criar dashboard
-            db = Dashboard(None, dname)
+            dbx = Dashboard(None, dname)
             pnl = session.get('pnamelist')
             ptl = session.get('ptypelist')
             ql = session.get('querylist')
             #Adicionar Painéis e querys
             for i in range(0, len(session.get('pnamelist'))):
-                db.add_query(pnl[i], ptl[i], ql[i])
+                dbx.add_query(pnl[i], ptl[i], ql[i])
             #Enviar a dashboard para o servidor
-            uid = db.send_dash()
+            uid = dbx.send_dash()
 
-            database.append(DashTmp(dname, datetime.datetime.now(), 'Public', "http://40.68.96.164:3000/d/"+str(uid)+"/"+str(dname)))
-
+            dash = Dash(uid=uid, nome=dname, visibilidade=1, url="http://40.68.96.164:3000/d/"+str(uid)+"/"+str(dname), user_id = current_user.id)
+            db.session.add(dash)
+            db.session.commit()
 
             print(session['pnamelist'])
             print(session['ptypelist'])
             print("\n")
-            print(json.dumps(db.dash))
+            print(json.dumps(dbx.dash))
             print("\n")
             
             #Limpar dados da criação da dashboard
@@ -124,7 +126,7 @@ def createdashboard(dname):
             session['ptypelist'] = []
             session['querylist'] = []
 
-            return render_template("dashboards.html", db=database)
+            return redirect(url_for("views.dashboards"))
     return render_template("createdashboards.html", dsh = dname, pname=None, ptype=None)
 
 #My Metrics Page

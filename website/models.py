@@ -1,4 +1,6 @@
 
+from flask.helpers import flash
+from sqlalchemy.sql.expression import false
 from website import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
@@ -26,10 +28,10 @@ class User(db.Model, UserMixin):
 class Dashboard(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     uid = db.Column(db.Integer, unique=True)
+    nome = db.Column(db.String(150), nullable=False)
     # data criação
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     # small description
-    description = db.Column(db.String(250))
     visibilidade = db.Column(db.Integer, nullable=False) # 0 -> privada, 1 -> pública
     url = db.Column(db.String(150), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
@@ -56,6 +58,7 @@ class Metrics(db.Model):
 class Kpi(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column((db.String(100)))
+    query = db.Column(db.String(300))
     metrica_id = db.Column(db.Integer, db.ForeignKey("metrics.id"), nullable=False)
 
 ## ------------

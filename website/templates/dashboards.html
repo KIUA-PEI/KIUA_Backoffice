@@ -45,93 +45,37 @@
             <thead>
               <tr>
                 <th scope="col">Name</th>
-                <th scope="col" style="width: 120px;">Since</th>
+                <th scope="col" style="width: 220px;">Since</th>
                 <th scope="col">Visibility</th>
-                <th scope="col">Description</th>
                 <th scope="col">Link</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>
-                  DashboardName
-                </td>
-                <td>12-04-2020</td>
-                <td class="pl-0">
-                  <div class="d-flex align-items-center">
-                    <i class='fas fa-users' style='font-size:24px'></i>
-                    <label class="custom-control ios-switch">
-                    <input type="checkbox" class="ios-switch-control-input" checked="">
-                    <span class="ios-switch-control-indicator"></span>
-                    </label>
-                    Public 
-                  </div>
-                </td>
-                <td>
-                  <small class="d-block">Dashboard com parques de estacionamento e wifiusr</small>
-                </td>
-                <td><a href="/dashboards">http://127.0.0.1:5000/dashboards</a></td>
-              </tr>
-              <tr>
+              {%for dash in db%}
+                <tr>
                   <td>
-                    DashboardName
+                    {{dash.dname}}
                   </td>
-                  <td>12-04-2020</td>
+                  <td>{{dash.date}}</td>
+                  
                   <td class="pl-0">
                     <div class="d-flex align-items-center">
-                      <i class='fas fa-user-alt' style='font-size:24px'></i>
+                      {% if dash.visibility == "Public" %}
+                        <i class='fas fa-users' style='font-size:22px'></i>
+                      {% else %}
+                        <i class='fas fa-user-alt' style='font-size:22px'></i>
+                      {% endif%}
                       <label class="custom-control ios-switch">
                       <input type="checkbox" class="ios-switch-control-input" checked="">
                       <span class="ios-switch-control-indicator"></span>
                       </label>
-                      Private
+                      {{dash.visibility}} 
                     </div>
                   </td>
-                  <td>
-                    <small class="d-block">Dashboard com parques de estacionamento e wifiusr</small>
-                  </td>
-                  <td><a href="/dashboards">http://127.0.0.1:5000/dashboards</a></td>
-              </tr>
-              <tr>
-                  <td>
-                    DashboardName
-                  </td>
-                  <td>12-04-2020</td>
-                  <td class="pl-0">
-                    <div class="d-flex align-items-center">
-                      <i class='fas fa-user-alt' style='font-size:24px'></i>
-                      <label class="custom-control ios-switch">
-                      <input type="checkbox" class="ios-switch-control-input" checked="">
-                      <span class="ios-switch-control-indicator"></span>
-                      </label>
-                      Public
-                    </div>
-                  </td>
-                  <td>
-                    <small class="d-block">Dashboard com parques de estacionamento e wifiusr</small>
-                  </td>
-                  <td><a href="/dashboards">http://127.0.0.1:5000/dashboards</a></td>
-              </tr>
-              <tr>
-                  <td>
-                    DashboardName
-                  </td>
-                  <td>12-05-2021</td>
-                  <td class="pl-0">
-                    <div class="d-flex align-items-center">
-                      <i class='fas fa-user-alt' style='font-size:24px'></i>
-                      <label class="custom-control ios-switch">
-                      <input type="checkbox" class="ios-switch-control-input" checked="">
-                      <span class="ios-switch-control-indicator"></span>
-                      </label>
-                      Public
-                    </div>
-                  </td>
-                  <td>
-                    <small class="d-block">Dashboard com parques de estacionamento e wifiusr</small>
-                  </td>
-                  <td><a href="/dashboards">http://127.0.0.1:5000/dashboards</a></td>
-              </tr>
+                  
+                  <td><a href="{{dash.link}}" target="_blank">{{dash.link}}</a></td>
+                </tr>
+              {% endfor %}
             </tbody>
           </table>
         </div>

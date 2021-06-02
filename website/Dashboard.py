@@ -62,7 +62,7 @@ class Dashboard:
         url = server + "/api/dashboards/db"
         r = requests.post(url=url, headers=headers, data=json.dumps(self.dash), verify=False)
         if(r.status_code == 200):
-            pass #inserir na bd (self.dash['dashboard']['title'],r.json()['uid'] )
+            return r.json()['uid']
         return 0
 
 
@@ -73,6 +73,8 @@ class Dashboard:
         p['title'] = pname
         npnl = len(self.dash['dashboard']['panels'])
         p['gridPos']['y'] = 8*(npnl//2)
+        #Resolução do erro
+        p['id'] = len(self.get_panels())+1
         if npnl % 2 != 0:
             p['gridPos']['x'] = 12
         self.dash['dashboard']['panels'].append(p)

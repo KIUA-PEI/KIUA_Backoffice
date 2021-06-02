@@ -2,8 +2,14 @@ from flask import Blueprint, request, flash, redirect, url_for, session
 from flask.templating import render_template
 from flask_login import login_required, current_user
 from website.Dashboard import *
+from website.DashTmp import *
+import datetime
 
 views = Blueprint("views", __name__)
+
+database = []
+#d = DashTmp("Dashboard1", datetime.datetime.now(), 'Public', "http://127.0.0.1:5000/dashboards")
+
 
 
 #MyDashboards Page
@@ -23,7 +29,7 @@ def dashboards():
         else:
             return redirect(url_for('views.createdashboard', dname=d))
 
-    return render_template("dashboards.html")
+    return render_template("dashboards.html", db=database)
 
 
 #Create Dashboard Page
@@ -102,7 +108,10 @@ def createdashboard(dname):
             for i in range(0, len(session.get('pnamelist'))):
                 db.add_query(pnl[i], ptl[i], ql[i])
             #Enviar a dashboard para o servidor
-            db.send_dash()
+            uid = db.send_dash()
+
+            database.append(DashTmp(dname, datetime.datetime.now(), 'Public', "http://40.68.96.164:3000/d/"+str(uid)+"/"+str(dname)))
+
 
             print(session['pnamelist'])
             print(session['ptypelist'])
@@ -115,7 +124,7 @@ def createdashboard(dname):
             session['ptypelist'] = []
             session['querylist'] = []
 
-            return render_template("dashboards.html")
+            return render_template("dashboards.html", db=database)
     return render_template("createdashboards.html", dsh = dname, pname=None, ptype=None)
 
 #My Metrics Page

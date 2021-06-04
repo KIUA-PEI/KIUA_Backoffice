@@ -3,7 +3,7 @@ from flask.templating import render_template
 from flask_login import login_required, current_user
 from website.Dashboard import *
 from website.DashTmp import *
-from website.models import Dashboard as Dash
+from website.models import Dashboard as Dash, Token_url
 import datetime
 from . import db
 
@@ -130,9 +130,44 @@ def createdashboard(dname):
     return render_template("createdashboards.html", dsh = dname, pname=None, ptype=None)
 
 #My Metrics Page
-@views.route("/mymetrics")
+@views.route("/mymetrics", methods=["GET", "POST"])
 @login_required
 def mymetrics():
+    if request.method == "POST":
+        name = request.form.get("metric-name")
+        period = request.form.get("dropdown-period")
+        endpoint = request.form.get("endpoint")
+        api_type = request.form.get("dropdown-api-type")
+        # print(name, period, endpoint, api_type)
+
+        # insert flash verifications
+
+        if api_type == "public":
+            fields =request.form.get("fields")
+            print(fields)
+
+        elif api_type == "key-based-authentication":
+            key = request.form.get("key-key")
+            fields =request.form.get("fields")
+            print(key, fields)
+
+            # adicionar à base de dados
+
+            # enviar dados à api do alex
+            
+        elif api_type == "bearer-token-based-authentication":
+            token_url = request.form.get("token-url")
+            token_ckey = request.form.get("token-ckey")
+            token_csecret = request.form.get("token-csecret")
+            fields =request.form.get("fields")
+            print(token_url, token_ckey, token_csecret, fields)
+
+        elif api_type == "http-authentication":
+            http_email = request.form.get("http-email")
+            http_pass = request.form.get("http-pass")
+            fields =request.form.get("fields")
+            print(http_email, http_pass, fields)
+
     return render_template("mymetrics.html")
 
 #Default Metrics Page
@@ -146,3 +181,14 @@ def metrics():
 @login_required
 def help():
     return render_template("help.html")
+
+
+def get_period(str):
+    if str == "5-em-5-minutos":
+        return 5
+    elif str == "30-em-30-minutos":
+        return 30
+    elif str == "hora-a-hora":
+        return 60
+    elif str == "diariamente":
+        return 24*60

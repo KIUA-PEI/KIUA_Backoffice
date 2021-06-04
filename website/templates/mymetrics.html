@@ -21,6 +21,11 @@
       document.getElementById("http-authentication").toggleAttribute("hidden");
       document.getElementById("key-based-auth").setAttribute("hidden",true);
       document.getElementById("bearer-token-based-authentication").setAttribute("hidden",true);
+    
+    } else if(status.value=="public"){
+      document.getElementById("key-based-auth").setAttribute("hidden",true);
+      document.getElementById("bearer-token-based-authentication").setAttribute("hidden",true);
+      document.getElementById("http-authentication").setAttribute("hidden",true);
     }
   }
 
@@ -39,109 +44,100 @@
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dashModal"><b>+</b></span> Add Metrics</button>
             </div>
           </div>
-                <!-- Metrics Modal-->
-                <div class="modal fade" id="dashModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
-                      <div class="modal-content">
-                          <form method="POST">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Add your Metric</h5>
-                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            
-                            <div class="modal-body">
-                              <input type="text" id="d" name="d" style="opacity: 70%;" placeholder="Metric name">
-                            </div>
-
-                            <hr class="sidebar-divider my-0">
-                            <h6 class="modal-title pb-0" style="padding: 14px;" id="exampleModalLabel">Query Frequency</h6>
-                            <div class="modal-body">
-                              <select name="dropdown-metrics" style="opacity: 70%; width: 200px;" id="dropdown-id">
-                                <option value="hora-a-hora">de hora a hora</option>
-                                <option value="5-em-5-minutos">de 5 em 5 minutos</option>
-                                <option value="30-em-30-minutos">de 30 em 30 minutos</option>
-                              </select>
-                            </div>
-
-                            <hr class="sidebar-divider my-0">
-                            <h6 class="modal-title pb-0" style="padding: 14px;" id="exampleModalLabel">Source Endpoint</h6>
-                            <div class="modal-body">
-                              <input type="url" id="d" name="d" style="opacity: 70%; width: 300px;">
-                            </div>
-
-                            <hr class="sidebar-divider my-0">
-                            <h6 class="modal-title pb-0" style="padding: 14px;" id="exampleModalLabel">Authentication</h6>
-                            <div class="modal-body">
-
-                              <select name="dropdown-metrics" style="opacity: 70%; width: 300px;" id="dropdown-id-authentication" onchange="changeStatus()">
-                                <option value="" disabled selected hidden>public api</option>
-                                <option value="key-based-authentication">key based authentication</option>
-                                <option value="bearer-token-based-authentication">bearer token based authentication</option>
-                                <option value="http-authentication">http authentication</option>
-                              </select>
-                              
-                              <div id="key-based-auth" hidden>  
-                                <hr class="sidebar-divider my-0">
-                                <h6 class="modal-title pb-0" id="exampleModalLabel">Key</h6>
-                                <div class="modal-body">
-                                  <input type="password" id="d" name="d" style="opacity: 70%; width: 300px;">
-                                </div>
-
-                                <hr class="sidebar-divider my-0">
-                                <h6 class="modal-title pb-0" id="exampleModalLabel">Fields</h6>
-                                <div class="modal-body" >
-                                  <input type="text" id="d" name="d" style="opacity: 70%; width: 300px;">
-                                </div>
-                              </div>
-
-                              <div id="bearer-token-based-authentication" hidden>  
-                                <hr class="sidebar-divider my-0">
-                                <h6 class="modal-title pb-0" id="exampleModalLabel">Token Url</h6>
-                                <div class="modal-body">
-                                  <input type="url" id="d" name="d" style="opacity: 70%; width: 300px;">
-                                </div>
-                                <hr class="sidebar-divider my-0">
-                                <h6 class="modal-title pb-0" id="exampleModalLabel">Consumer Key</h6>
-                                <div class="modal-body">
-                                  <input type="password" id="d" name="d" style="opacity: 70%; width: 300px;">
-                                </div>
-                                <hr class="sidebar-divider my-0">
-                                <h6 class="modal-title pb-0" id="exampleModalLabel">Consumer Secret</h6>
-                                <div class="modal-body">
-                                  <input type="password" id="d" name="d" style="opacity: 70%; width: 300px;">
-                                </div>
-                              </div>
-
-                              <div id="http-authentication" hidden>  
-                                <hr class="sidebar-divider my-0">
-                                <h6 class="modal-title pb-0" id="exampleModalLabel">Email</h6>
-                                <div class="modal-body">
-                                  <input type="email" id="d" name="d" style="opacity: 70%; width: 300px;">
-                                </div>
-                                <hr class="sidebar-divider my-0">
-                                <h6 class="modal-title pb-0" id="exampleModalLabel">password</h6>
-                                <div class="modal-body">
-                                  <input type="password" id="d" name="d" style="opacity: 70%; width: 300px;">
-                                </div>
-                              </div>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-secondary mr-auto" type="button" data-dismiss="modal">Help</button>
-                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                <button class="btn btn-primary" name="createbtn" value="btn" method="post" type="submit">Create</button>
-                            </div>
-                          </form>
-      
+          <!-- Metrics Modal-->
+          <div class="modal fade" id="dashModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <form method="POST">
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Add your Metric</h5>
+                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                          </button>
                       </div>
-                  </div>
+                      <div class="modal-body">
+                        <input type="text" id="metric-name" name="metric-name" style="opacity: 70%;" placeholder="Metric name">
+                      </div>
+                      <hr class="sidebar-divider my-0">
+                      <h6 class="modal-title pt-1 pl-3" id="exampleModalLabel">Query Frequency</h6>
+                      <div class="modal-body">
+                        <select name="dropdown-period" style="opacity: 70%; width: 200px;" id="dropdown-id">
+                          <option value="5-em-5-minutos">de 5 em 5 minutos</option>
+                          <option value="30-em-30-minutos">de 30 em 30 minutos</option>
+                          <option value="hora-a-hora">de hora a hora</option>
+                          <option value="diariamente">diariamente</option>
+                        </select>
+                      </div>
+                      <hr class="sidebar-divider my-0">
+                      <h6 class="modal-title pt-1 pl-3" id="exampleModalLabel">Source Endpoint</h6>
+                      <div class="modal-body">
+                        <input type="url" id="endpoint" name="endpoint" style="opacity: 70%; width: 300px;" placeholder="https://exampleapi.xpto">
+                      </div>
+                      <hr class="sidebar-divider my-0">
+                      <h6 class="modal-title pt-1 pl-3" id="exampleModalLabel">Authentication</h6>
+                      <div class="modal-body">
+                        <select name="dropdown-api-type" style="opacity: 70%; width: 300px;" id="dropdown-id-authentication" onchange="changeStatus()">
+                          <option value="public" selected>public api</option>
+                          <option value="key-based-authentication">key based authentication</option>
+                          <option value="bearer-token-based-authentication">bearer token based authentication</option>
+                          <option value="http-authentication">http authentication</option>
+                        </select>
+                      </div>
+                      <!-- key based -->
+                      <div id="key-based-auth" class="" hidden>  
+                        <hr class="sidebar-divider my-0">
+                        <h6 class="modal-title pt-1 pl-3" id="exampleModalLabel">Key</h6>
+                        <div class="modal-body">
+                          <input type="password" id="key-key" name="key-key" style="opacity: 70%; width: 300px;">
+                        </div>
+                      </div>
+                      <!-- bearer-token -->
+                      <div id="bearer-token-based-authentication" hidden>  
+                        <hr class="sidebar-divider my-0">
+                        <h6 class="modal-title pt-1 pl-3" id="exampleModalLabel">Token Url</h6>
+                        <div class="modal-body">
+                          <input type="url" id="token-url" name="token-url" style="opacity: 70%; width: 300px;">
+                        </div>
+                        <hr class="sidebar-divider my-0">
+                        <h6 class="modal-title pt-1 pl-3" id="exampleModalLabel">Consumer Key</h6>
+                        <div class="modal-body">
+                          <input type="password" id="token-ckey" name="token-ckey" style="opacity: 70%; width: 300px;">
+                        </div>
+                        <hr class="sidebar-divider my-0">
+                        <h6 class="modal-title pt-1 pl-3" id="exampleModalLabel">Consumer Secret</h6>
+                        <div class="modal-body">
+                          <input type="password" id="token-csecret" name="token-csecret" style="opacity: 70%; width: 300px;">
+                        </div>
+                      </div>
+                      <!-- http -->
+                      <div id="http-authentication" hidden>  
+                        <hr class="sidebar-divider my-0">
+                        <h6 class="modal-title pt-1 pl-3" id="exampleModalLabel">Email</h6>
+                        <div class="modal-body">
+                          <input type="email" id="http-email" name="http-email" style="opacity: 70%; width: 300px;">
+                        </div>
+                        <hr class="sidebar-divider my-0">
+                        <h6 class="modal-title pt-1 pl-3" id="exampleModalLabel">password</h6>
+                        <div class="modal-body">
+                          <input type="password" id="http-pass" name="http-pass" style="opacity: 70%; width: 300px;">
+                        </div>
+                      </div>
+                      <hr class="sidebar-divider my-0">
+                      <h6 class="modal-title pt-1 pl-3" id="exampleModalLabel">Fields</h6>
+                      <div class="modal-body">
+                        <input type="" id="fields" name="fields" style="opacity: 70%; width: 300px;" placeholder="field1, field2, field3, ...">
+                      </div>
+                      <div class="modal-footer">
+                          <button class="btn btn-primary mr-auto" type="button" data-dismiss="modal">Help</button>
+                          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                          <button class="btn btn-primary" name="createbtn" value="btn" method="post" type="submit">Create</button>
+                      </div>
+                    </form>
                 </div>
-            <br>
-    
+            </div>
+          </div>
+          <br>
           <div class="table-responsive">
-    
             <table class="table table-striped custom-table">
               <thead>
                 <tr>
@@ -154,13 +150,10 @@
                 </tr>
               </thead>
               <tbody>
-    
                 <tr>
-    
                   <td>
                     NumUsersAP
                   </td>
-                  
                   <td>12-04-2020</td>
                   <td>
                     <small class="d-block">1 hour</small>
@@ -174,11 +167,9 @@
                 </td>
                 </tr>
                 <tr>
-    
                     <td>
                       numDNSResolutions
                     </td>
-                    
                     <td>12-04-2020</td>
                     <td>
                       <small class="d-block">10 min</small>
@@ -192,11 +183,9 @@
                     </td>
                 </tr>
                 <tr>
-    
                     <td>
                       metric3
                     </td>
-                    
                     <td>12-04-2020</td>
                     </td>
                     <td>
@@ -210,13 +199,10 @@
                         <button type="button" class="btn fas fa-trash-alt"></button>
                     </td>
                 </tr>
-    
                 <tr>
-    
                     <td>
                       metric4
                     </td>
-                    
                     <td>12-05-2021</td>
                     </td>
                     <td>
@@ -230,14 +216,10 @@
                         <button type="button" class="btn fas fa-trash-alt"></button>
                     </td>
                 </tr>
-                
               </tbody>
             </table>
           </div>
-    
-    
         </div>
-    
     <br>
 </div>
 

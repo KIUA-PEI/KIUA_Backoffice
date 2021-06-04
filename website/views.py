@@ -139,12 +139,25 @@ def createdashboard(dname):
             session['querylist'] = []
 
             return redirect(url_for("views.dashboards"))
+        #Cancelar todo o processo de criar uma dashboard
         elif request.args.get('dash', '') == 'Cancel':
             #Limpar dados da criação da dashboard
             session['pnamelist'] = []
             session['ptypelist'] = []
             session['querylist'] = []
             return redirect(url_for("views.dashboards"))
+        #Eliminar um dos paineis de uma dashboard
+        elif request.args.get('deletePanel', ''):
+            i = session.get('pnamelist').index(request.args.get('deletePanel', ''))
+            session['pnamelist'] = session.get('pnamelist')
+            session['ptypelist'] = session.get('ptypelist')
+            session['querylist'] = session.get('querylist')
+            session['pnamelist'].pop(i)
+            session['ptypelist'].pop(i)
+            session['querylist'].pop(i)
+
+            return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
+   
     return render_template("createdashboards.html", dsh = dname, pname=None, ptype=None)
 
 #My Metrics Page

@@ -25,7 +25,7 @@
           </div>
 
           <button type="button" class="accordion">Wifi Devices</button>
-          <div id="foo" class="panel">
+          <div class="panel">
             <br>
             <input type="checkbox" id="m1" name="m1" value="SELECT sum(wifiCount) as TotalUsers FROM wifiusr WHERE $timeFilter GROUP BY time(1h) fill(null)">
             <label for="vehicle1"> Total devices connected to ua</label><br>
@@ -89,8 +89,13 @@
               <p></p>
             {% else %}
               {% for i in range(0, pname|length) %}
-                <h5>{{pname[i]}}</h5><h6>{{ptype[i]}}</h6>
-              {% endfor %}
+                <form>
+                  <h5>
+                    <button type="submit" class="btn fas fa-trash-alt" id="deletePanel" name="deletePanel" value="{{ pname[i] }}"></button>
+                    {{pname[i]}}&nbsp;-&nbsp;{{ptype[i]}}&nbsp;&nbsp;&nbsp;&nbsp;
+                  </h5>
+                </form>
+                {% endfor %}
             {% endif %}
             
           </div>

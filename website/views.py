@@ -2,7 +2,6 @@ from flask import Blueprint, request, flash, redirect, url_for, session
 from flask.templating import render_template
 from flask_login import login_required, current_user
 from website.Dashboard import *
-from website.DashTmp import *
 from website.models import Dashboard as Dash, Token_url
 import datetime
 from . import db
@@ -24,11 +23,24 @@ def dashboards():
 
     if request.method == "POST":
         d = request.form.get("d")
-        
         if d == "":
             flash('ERROR: Invalid Dashboard name', category='error')
+        elif Dash.query.filter_by(nome = d).first() != None:
+            flash('ERROR: Dashboard name already exists, choose a new one', category='error')
         else:
             return redirect(url_for('views.createdashboard', dname=d))
+
+    elif request.method == "GET":
+        if request.args.get('deleteBTN', '') != "": 
+            dashname = request.args.get('deleteBTN', '')
+            #Obter o uid da dashboard da base de dados
+            dash = Dash.query.filter_by(nome = dashname).first()
+            print("\n"+str(dash.uid)+"\n")
+            #Eliminar a dashboard do servidor grafana
+            Dashboard.del_dash(uid = dash.uid)
+            #Eliminar a dashboard da base de dados do backoffice
+            db.session.delete(dash)
+            db.session.commit()
 
     return render_template("dashboards.html")
 
@@ -126,6 +138,12 @@ def createdashboard(dname):
             session['ptypelist'] = []
             session['querylist'] = []
 
+            return redirect(url_for("views.dashboards"))
+        elif request.args.get('dash', '') == 'Cancel':
+            #Limpar dados da criação da dashboard
+            session['pnamelist'] = []
+            session['ptypelist'] = []
+            session['querylist'] = []
             return redirect(url_for("views.dashboards"))
     return render_template("createdashboards.html", dsh = dname, pname=None, ptype=None)
 

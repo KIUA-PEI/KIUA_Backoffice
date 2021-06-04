@@ -48,6 +48,7 @@
                 <th scope="col" style="width: 220px;">Since</th>
                 <th scope="col">Visibility</th>
                 <th scope="col">Link</th>
+                <th scope="col">Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -78,7 +79,11 @@
                   </td>
                   
                   <td><a href="{{ dash.url }}" target="_blank">{{dash.url}}</a></td>
-                </tr>
+                  
+                  <form>
+                    <td><button type="submit" class="btn fas fa-trash-alt" id="deleteBTN" name="deleteBTN" value="{{ dash.nome }}"></button></td>
+                  </form>
+                  </tr>
               {% endfor %}
             </tbody>
           </table>

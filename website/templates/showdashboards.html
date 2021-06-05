@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <br>
+    
+    <div class="content">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-5 justify-content-left" style="text-align: left;">
+            <h2>Your Dashboard - {{dname}}</h2><br>
+            <form>
+            <button type="submit" class="btn btn-secondary" id="theme" name="theme" value="{{ theme }}">{{theme}} Theme</button>
+            </form>
+          </div><br>
+        </div>
+        <br>
+        {% for link in urls %}
+        <iframe src="{{ link }}" width="970" height="370" frameborder="0"></iframe><br><br>
+        {% endfor %}
+      </div>
+    <br>
+</div>
+
+{% endblock %}

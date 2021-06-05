@@ -123,7 +123,7 @@ def createdashboard(dname):
             #Enviar a dashboard para o servidor
             uid = dbx.send_dash()
 
-            dash = Dash(uid=uid, nome=dname, visibilidade=1, url="http://40.68.96.164:3000/d/"+str(uid)+"/"+str(dname), user_id = current_user.id)
+            dash = Dash(uid=uid, nome=dname, visibilidade=1, url="http://40.68.96.164:3000/d/"+str(uid)+"/"+str(dname), user_id = current_user.id, panels =  len(session.get('pnamelist')))
             db.session.add(dash)
             db.session.commit()
 
@@ -200,6 +200,31 @@ def mymetrics():
             print(http_email, http_pass, fields)
 
     return render_template("mymetrics.html")
+
+#Show a dashboard page
+@views.route("/showdashboard/<dname>", methods=["GET", "POST"])
+@login_required
+def showdashboard(dname):
+    
+    theme = "Light"
+    if request.method == "GET":
+        theme = request.args.get('theme', '')
+    
+    #Obter a dashboard da base de dados
+    dash = Dash.query.filter_by(nome = dname).first()
+    urls = []
+    #Obter todos os painéis
+    for i in range(1, dash.panels+1):
+        if theme == "Light":
+            urls.append("http://40.68.96.164:3000/d-solo/"+dash.uid+"/"+dash.nome+"?panelId="+str(i)+"&theme=light")
+        else:
+            urls.append("http://40.68.96.164:3000/d-solo/"+dash.uid+"/"+dash.nome+"?panelId="+str(i)+"&theme=dark")
+    if theme == "Light":
+        return render_template("showdashboards.html",dname=dname, urls=urls, theme="Dark")
+    else:
+        return render_template("showdashboards.html",dname=dname, urls=urls, theme="Light")
+
+
 
 #Default Metrics Page
 @views.route("/metrics")

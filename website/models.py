@@ -21,6 +21,7 @@ class User(db.Model, UserMixin):
     key = db.relationship("Key_url", backref="user", lazy=True)
     http = db.relationship("Http_url", backref="user", lazy=True)
     token = db.relationship("Token_url", backref="user", lazy=True)
+    folder_id = db.Column(db.Integer, unique=True)
 
     def __repr__(self):
         return "id: " + str(self.id) + ", email: " + self.email + ", " + self.fname + " " + self.lname

@@ -3,6 +3,7 @@ from flask.templating import render_template
 from flask_login import login_required, current_user
 from website.Dashboard import *
 from website.models import Dashboard as Dash, Token_url
+from website.models import User
 import datetime
 from . import db
 
@@ -16,6 +17,7 @@ views = Blueprint("views", __name__)
 @views.route("/dashboards", methods=["GET","POST"])
 @login_required
 def dashboards():
+    other_users = (User.query.filter(User.id!=current_user.id).all())
 
     session['pnamelist'] = []
     session['ptypelist'] = []
@@ -25,16 +27,16 @@ def dashboards():
         d = request.form.get("d")
         if d == "":
             flash('ERROR: Invalid Dashboard name', category='error')
-        elif Dash.query.filter_by(nome = d).first() != None:
+        elif Dash.query.filter_by(user_id = current_user.id, nome = d).first() != None:
             flash('ERROR: Dashboard name already exists, choose a new one', category='error')
         else:
             return redirect(url_for('views.createdashboard', dname=d))
 
     elif request.method == "GET":
+        #Apagar um dashboard
         if request.args.get('deleteBTN', '') != "": 
-            dashname = request.args.get('deleteBTN', '')
             #Obter o uid da dashboard da base de dados
-            dash = Dash.query.filter_by(nome = dashname).first()
+            dash = Dash.query.filter_by(nome = request.args.get('deleteBTN', '')).first()
             print("\n"+str(dash.uid)+"\n")
             #Eliminar a dashboard do servidor grafana
             Dashboard.del_dash(uid = dash.uid)
@@ -42,7 +44,20 @@ def dashboards():
             db.session.delete(dash)
             db.session.commit()
 
-    return render_template("dashboards.html")
+        #Mudar para pública a visibilidade de uma dashboard
+        elif request.args.get('public', '') != "":
+            dash = Dash.query.filter_by(user_id = current_user.id, nome = request.args.get('public', '')).first()
+            dash.visibilidade = 1
+            db.session.commit()
+
+        #Mudar para privada a visibilidade de uma dashboard
+        elif request.args.get('private', '') != "":
+            dash = Dash.query.filter_by(user_id = current_user.id, nome = request.args.get('private', '')).first()
+            dash.visibilidade = 0
+            db.session.commit()
+
+
+    return render_template("dashboards.html", other_users=other_users)
 
 
 #Create Dashboard Page
@@ -121,9 +136,10 @@ def createdashboard(dname):
             for i in range(0, len(session.get('pnamelist'))):
                 dbx.add_query(pnl[i], ptl[i], ql[i])
             #Enviar a dashboard para o servidor
-            uid = dbx.send_dash()
+            print(current_user.folder_id)
+            uid = dbx.send_dash(current_user.folder_id)
 
-            dash = Dash(uid=uid, nome=dname, visibilidade=1, url="http://40.68.96.164:3000/d/"+str(uid)+"/"+str(dname), user_id = current_user.id, panels =  len(session.get('pnamelist')))
+            dash = Dash(uid=uid, nome=dname, visibilidade=0, url="http://40.68.96.164:3000/d/"+str(uid)+"/"+str(dname), user_id = current_user.id, panels =  len(session.get('pnamelist')))
             db.session.add(dash)
             db.session.commit()
 
@@ -202,16 +218,16 @@ def mymetrics():
     return render_template("mymetrics.html")
 
 #Show a dashboard page
-@views.route("/showdashboard/<dname>", methods=["GET", "POST"])
+@views.route("/showdashboard/<userid>/<dname>", methods=["GET", "POST"])
 @login_required
-def showdashboard(dname):
+def showdashboard(userid, dname):
     
     theme = "Light"
     if request.method == "GET":
         theme = request.args.get('theme', '')
     
     #Obter a dashboard da base de dados
-    dash = Dash.query.filter_by(nome = dname).first()
+    dash = Dash.query.filter_by(user_id = userid, nome = dname).first()
     urls = []
     #Obter todos os painéis
     for i in range(1, dash.panels+1):

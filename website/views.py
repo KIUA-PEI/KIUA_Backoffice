@@ -36,7 +36,7 @@ def dashboards():
         #Apagar um dashboard
         if request.args.get('deleteBTN', '') != "": 
             #Obter o uid da dashboard da base de dados
-            dash = Dash.query.filter_by(nome = request.args.get('deleteBTN', '')).first()
+            dash = Dash.query.filter_by(user_id = current_user.id, nome = request.args.get('deleteBTN', '')).first()
             print("\n"+str(dash.uid)+"\n")
             #Eliminar a dashboard do servidor grafana
             Dashboard.del_dash(uid = dash.uid)

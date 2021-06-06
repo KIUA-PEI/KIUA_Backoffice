@@ -2,13 +2,9 @@ from flask import Blueprint, request, flash, redirect, url_for, session
 from flask.templating import render_template
 from flask_login import login_required, current_user
 from website.Dashboard import *
-<<<<<<< HEAD
-from website.DashTmp import *
 from website.models import Dashboard as Dash, Basic_url, Key_url, Http_url, Token_url
-=======
 from website.models import Dashboard as Dash, Token_url
 from website.models import User
->>>>>>> f3714ad0eab40a468c7b3ac563f3bb74e75b00a7
 import datetime
 from . import db
 

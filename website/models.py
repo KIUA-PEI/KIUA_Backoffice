@@ -1,4 +1,3 @@
-
 from flask.helpers import flash
 from sqlalchemy.sql.expression import false
 from website import db
@@ -66,6 +65,7 @@ class Kpi(db.Model):
 class Basic_url(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(500),nullable=False)
+    name = db.Column(db.String(50),nullable=False)
     # data criação
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     args = db.Column(db.String(750),nullable=True)
@@ -80,6 +80,7 @@ class Basic_url(db.Model):
 class Key_url(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(500),nullable=False)
+    name = db.Column(db.String(50),nullable=False)
     # data criação
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     args = db.Column(db.String(750),nullable=True)
@@ -95,6 +96,7 @@ class Key_url(db.Model):
 class Http_url(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(500),nullable=False)
+    name = db.Column(db.String(50),nullable=False)
     # data criação
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     args = db.Column(db.String(750),nullable=True)
@@ -111,6 +113,7 @@ class Http_url(db.Model):
 class Token_url(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(500),nullable=False)
+    name = db.Column(db.String(50),nullable=False)
     # data criação
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     token_url = db.Column(db.String(500),nullable=False)

@@ -3,7 +3,7 @@ from flask.templating import render_template
 from flask_login import login_required, current_user
 from website.Dashboard import *
 from website.DashTmp import *
-from website.models import Dashboard as Dash, Token_url
+from website.models import Dashboard as Dash, Basic_url, Key_url, Http_url, Token_url
 import datetime
 from . import db
 
@@ -138,35 +138,39 @@ def mymetrics():
         period = request.form.get("dropdown-period")
         endpoint = request.form.get("endpoint")
         api_type = request.form.get("dropdown-api-type")
-        # print(name, period, endpoint, api_type)
+        fields =request.form.get("fields")
 
         # insert flash verifications
 
         if api_type == "public":
-            fields =request.form.get("fields")
-            print(fields)
+            basic = Basic_url(url=endpoint, name=name, args=fields, period=get_period(period), user_id=current_user.id)
+            db.session.add(basic)
+            db.session.commit()
+
 
         elif api_type == "key-based-authentication":
             key = request.form.get("key-key")
-            fields =request.form.get("fields")
-            print(key, fields)
-
-            # adicionar à base de dados
-
-            # enviar dados à api do alex
+            
+            keyapi = Key_url(url=endpoint, name=name, args=fields, period=get_period(period), key=key, user_id=current_user.id)
+            db.session.add(keyapi)
+            db.session.commit()
             
         elif api_type == "bearer-token-based-authentication":
             token_url = request.form.get("token-url")
             token_ckey = request.form.get("token-ckey")
             token_csecret = request.form.get("token-csecret")
-            fields =request.form.get("fields")
-            print(token_url, token_ckey, token_csecret, fields)
+            
+            tokenapi = Token_url(url=endpoint, name=name, args=fields, token_url=token_url, period=get_period(period), key=token_ckey, secret=token_csecret, user_id=current_user.id)
+            db.session.add(tokenapi)
+            db.session.commit()
 
         elif api_type == "http-authentication":
-            http_email = request.form.get("http-email")
-            http_pass = request.form.get("http-pass")
-            fields =request.form.get("fields")
-            print(http_email, http_pass, fields)
+            user = request.form.get("http-email")
+            passx = request.form.get("http-pass")
+
+            httpapi = Http_url(url=endpoint, name=name, args=fields, period=get_period(period), username=user, key=passx, user_id=current_user.id)
+            db.session.add(httpapi)
+            db.session.commit()
 
     return render_template("mymetrics.html")
 
@@ -185,10 +189,10 @@ def help():
 
 def get_period(str):
     if str == "5-em-5-minutos":
-        return 5
+        return "5 minutos"
     elif str == "30-em-30-minutos":
-        return 30
+        return "30 minutos"
     elif str == "hora-a-hora":
-        return 60
+        return "1 hora"
     elif str == "diariamente":
-        return 24*60
+        return "1 dia"

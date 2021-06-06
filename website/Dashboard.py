@@ -41,9 +41,8 @@ class Dashboard:
         return targets
 
 
-    def del_dash(self, danem):
+    def del_dash(uid):
         #dada o dname obter o uid associado
-        uid = None
         url = server + "/api/dashboards/uid/" + uid
         req = requests.delete(url=url, headers=headers, verify=False)
         if req.status_code == 200 : return 1
@@ -58,7 +57,8 @@ class Dashboard:
         return 1
 
 
-    def send_dash(self):
+    def send_dash(self, fid):
+        self.dash["folderId"] = fid
         url = server + "/api/dashboards/db"
         r = requests.post(url=url, headers=headers, data=json.dumps(self.dash), verify=False)
         if(r.status_code == 200):
@@ -110,17 +110,16 @@ class Dashboard:
                 break
 
         return 1
-
-    def get_uid(self, dname):
-        return None
-
-
-
-
-
-
-
-
+        
+    @staticmethod
+    def create_folder(fname):
+        url = server + "/api/folders"
+        folder = {
+            "uid" : None,
+            "title" : fname
+        }
+        r = requests.post(url=url, headers=headers, data=json.dumps(folder), verify=False)
+        return r.json()['id']
 
 
 

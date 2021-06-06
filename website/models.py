@@ -20,6 +20,7 @@ class User(db.Model, UserMixin):
     key = db.relationship("Key_url", backref="user", lazy=True)
     http = db.relationship("Http_url", backref="user", lazy=True)
     token = db.relationship("Token_url", backref="user", lazy=True)
+    folder_id = db.Column(db.Integer, unique=True)
 
     def __repr__(self):
         return "id: " + str(self.id) + ", email: " + self.email + ", " + self.fname + " " + self.lname
@@ -34,7 +35,7 @@ class Dashboard(db.Model):
     visibilidade = db.Column(db.Integer, nullable=False) # 0 -> privada, 1 -> pública
     url = db.Column(db.String(150), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    panels = db.relationship("Panels", backref="dashboard", lazy=True)
+    panels = db.Column(db.Integer, unique=False)
 
     def __repr__(self):
         return "id: " + str(self.id) + "uid: " + str(self.uid) + "date: " + str(self.date) + "url: " + str(self.url) + ", user_id: " + str(self.user_id)

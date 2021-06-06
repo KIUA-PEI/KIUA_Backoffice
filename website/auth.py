@@ -6,6 +6,7 @@ from flask import request, flash, redirect, url_for
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
+from website.Dashboard import * 
 
 auth = Blueprint("auth", __name__)
 
@@ -61,6 +62,10 @@ def signup():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Account created with success!', category='success')
+            new_user.folder_id = Dashboard.create_folder(str(new_user.id))
+            print(new_user.folder_id)
+            db.session.commit()
+            print(new_user.folder_id)
             return redirect(url_for("views.dashboards"))
 
     return render_template("register.html")

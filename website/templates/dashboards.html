@@ -12,8 +12,8 @@
             <h2>MyDashboards</h2>
           </div>
           <div class="col-sm-9" style="text-align: right;">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dashModal"><b>+</b></span> New Dashboard</button>
-        </div>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dashModal"><b>+</b> New Dashboard</button>
+          </div>
         </div>
           <br>
           <!-- Dashboard Modal-->
@@ -48,6 +48,7 @@
                 <th scope="col" style="width: 220px;">Since</th>
                 <th scope="col">Visibility</th>
                 <th scope="col">Link</th>
+                <th scope="col">Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -60,25 +61,67 @@
                   
                   <td class="pl-0">
                     <div class="d-flex align-items-center">
-                      {% if dash.visibility == 1 %}
-                        <i class='fas fa-users' style='font-size:22px'></i>
+                      {% if dash.visibilidade|int() == 1 %}
+                        <i class='fas fa-users' style='font-size:22px'></i>&nbsp;&nbsp;
+                        <form method="GET">
+                          <button class="btn btn-primary" type="button">Public</button>
+                          <button class="btn" type="submit" name="private" value="{{dash.nome}}">Private</button>
+                        </form>
                       {% else %}
-                        <i class='fas fa-user-alt' style='font-size:22px'></i>
+                        <i class='fas fa-user-alt' style='font-size:22px'></i>&nbsp;&nbsp;
+                        <form method="GET">
+                          <button class="btn" type="submit" name="public" value="{{dash.nome}}">Public</button>
+                          <button class="btn btn-primary" type="button" >Private</button>
+                        </form>
                       {% endif%}
-                      <label class="custom-control ios-switch">
-                      <input type="checkbox" class="ios-switch-control-input" checked="">
-                      <span class="ios-switch-control-indicator"></span>
-                      </label>
-                      {% if dash.visibility == 1 %}
-                        <p>Public</p>
-                      {% else %}
-                        <p>Private</p>
-                      {% endif%}
+
                     </div>
                   </td>
                   
-                  <td><a href="{{ dash.url }}" target="_blank">{{dash.url}}</a></td>
-                </tr>
+                  <td><a href="/showdashboard/{{current_user.id}}/{{dash.nome}}">/showdashboard/{{dash.nome}}</a></td>
+                  
+                  <form>
+                    <td><button type="submit" class="btn fas fa-trash-alt" id="deleteBTN" name="deleteBTN" value="{{ dash.nome }}"></button></td>
+                  </form>
+                  </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <br><br>
+        <div class="row">
+          <div class="col-sm-3 justify-content-left" style="text-align: left;">
+            <h2>PublicDashboards</h2>
+          </div>
+        </div>
+        <br>
+        <div class="table-responsive">
+          <table class="table table-striped custom-table">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col" style="width: 220px;">Since</th>
+                <th scope="col">Author</th>
+                <th scope="col">Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              {%for user in other_users %}
+                {% for dash in user.dashboards %}
+                  {% if dash.visibilidade|int() == 1 %}
+                  <tr>
+                    <td>
+                      {{dash.nome}}
+                    </td>
+                    <td>{{dash.date}}</td>
+                    
+                    <td>{{user.fname}} {{user.lname}}</td>
+                    
+                    <td><a href="/showdashboard/{{user.id}}/{{dash.nome}}">/showdashboard/{{dash.nome}}</a></td>
+                    
+                    </tr>
+                  {% endif %}
+                {% endfor %}
               {% endfor %}
             </tbody>
           </table>

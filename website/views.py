@@ -2,8 +2,13 @@ from flask import Blueprint, request, flash, redirect, url_for, session
 from flask.templating import render_template
 from flask_login import login_required, current_user
 from website.Dashboard import *
+<<<<<<< HEAD
 from website.DashTmp import *
 from website.models import Dashboard as Dash, Basic_url, Key_url, Http_url, Token_url
+=======
+from website.models import Dashboard as Dash, Token_url
+from website.models import User
+>>>>>>> f3714ad0eab40a468c7b3ac563f3bb74e75b00a7
 import datetime
 from . import db
 
@@ -17,6 +22,7 @@ views = Blueprint("views", __name__)
 @views.route("/dashboards", methods=["GET","POST"])
 @login_required
 def dashboards():
+    other_users = (User.query.filter(User.id!=current_user.id).all())
 
     session['pnamelist'] = []
     session['ptypelist'] = []
@@ -24,13 +30,39 @@ def dashboards():
 
     if request.method == "POST":
         d = request.form.get("d")
-        
         if d == "":
             flash('ERROR: Invalid Dashboard name', category='error')
+        elif Dash.query.filter_by(user_id = current_user.id, nome = d).first() != None:
+            flash('ERROR: Dashboard name already exists, choose a new one', category='error')
         else:
             return redirect(url_for('views.createdashboard', dname=d))
 
-    return render_template("dashboards.html")
+    elif request.method == "GET":
+        #Apagar um dashboard
+        if request.args.get('deleteBTN', '') != "": 
+            #Obter o uid da dashboard da base de dados
+            dash = Dash.query.filter_by(user_id = current_user.id, nome = request.args.get('deleteBTN', '')).first()
+            print("\n"+str(dash.uid)+"\n")
+            #Eliminar a dashboard do servidor grafana
+            Dashboard.del_dash(uid = dash.uid)
+            #Eliminar a dashboard da base de dados do backoffice
+            db.session.delete(dash)
+            db.session.commit()
+
+        #Mudar para pública a visibilidade de uma dashboard
+        elif request.args.get('public', '') != "":
+            dash = Dash.query.filter_by(user_id = current_user.id, nome = request.args.get('public', '')).first()
+            dash.visibilidade = 1
+            db.session.commit()
+
+        #Mudar para privada a visibilidade de uma dashboard
+        elif request.args.get('private', '') != "":
+            dash = Dash.query.filter_by(user_id = current_user.id, nome = request.args.get('private', '')).first()
+            dash.visibilidade = 0
+            db.session.commit()
+
+
+    return render_template("dashboards.html", other_users=other_users)
 
 
 #Create Dashboard Page
@@ -109,9 +141,10 @@ def createdashboard(dname):
             for i in range(0, len(session.get('pnamelist'))):
                 dbx.add_query(pnl[i], ptl[i], ql[i])
             #Enviar a dashboard para o servidor
-            uid = dbx.send_dash()
+            print(current_user.folder_id)
+            uid = dbx.send_dash(current_user.folder_id)
 
-            dash = Dash(uid=uid, nome=dname, visibilidade=1, url="http://40.68.96.164:3000/d/"+str(uid)+"/"+str(dname), user_id = current_user.id)
+            dash = Dash(uid=uid, nome=dname, visibilidade=0, url="http://40.68.96.164:3000/d/"+str(uid)+"/"+str(dname), user_id = current_user.id, panels =  len(session.get('pnamelist')))
             db.session.add(dash)
             db.session.commit()
 
@@ -127,6 +160,25 @@ def createdashboard(dname):
             session['querylist'] = []
 
             return redirect(url_for("views.dashboards"))
+        #Cancelar todo o processo de criar uma dashboard
+        elif request.args.get('dash', '') == 'Cancel':
+            #Limpar dados da criação da dashboard
+            session['pnamelist'] = []
+            session['ptypelist'] = []
+            session['querylist'] = []
+            return redirect(url_for("views.dashboards"))
+        #Eliminar um dos paineis de uma dashboard
+        elif request.args.get('deletePanel', ''):
+            i = session.get('pnamelist').index(request.args.get('deletePanel', ''))
+            session['pnamelist'] = session.get('pnamelist')
+            session['ptypelist'] = session.get('ptypelist')
+            session['querylist'] = session.get('querylist')
+            session['pnamelist'].pop(i)
+            session['ptypelist'].pop(i)
+            session['querylist'].pop(i)
+
+            return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
+   
     return render_template("createdashboards.html", dsh = dname, pname=None, ptype=None)
 
 #My Metrics Page
@@ -173,6 +225,31 @@ def mymetrics():
             db.session.commit()
 
     return render_template("mymetrics.html")
+
+#Show a dashboard page
+@views.route("/showdashboard/<userid>/<dname>", methods=["GET", "POST"])
+@login_required
+def showdashboard(userid, dname):
+    
+    theme = "Light"
+    if request.method == "GET":
+        theme = request.args.get('theme', '')
+    
+    #Obter a dashboard da base de dados
+    dash = Dash.query.filter_by(user_id = userid, nome = dname).first()
+    urls = []
+    #Obter todos os painéis
+    for i in range(1, dash.panels+1):
+        if theme == "Light":
+            urls.append("http://40.68.96.164:3000/d-solo/"+dash.uid+"/"+dash.nome+"?panelId="+str(i)+"&theme=light")
+        else:
+            urls.append("http://40.68.96.164:3000/d-solo/"+dash.uid+"/"+dash.nome+"?panelId="+str(i)+"&theme=dark")
+    if theme == "Light":
+        return render_template("showdashboards.html",dname=dname, urls=urls, theme="Dark")
+    else:
+        return render_template("showdashboards.html",dname=dname, urls=urls, theme="Light")
+
+
 
 #Default Metrics Page
 @views.route("/metrics")

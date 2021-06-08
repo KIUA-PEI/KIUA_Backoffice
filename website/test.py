@@ -1,8 +1,7 @@
-from sqlalchemy.orm import eagerload
-from sqlalchemy.sql.functions import user
 from website.models import *
 from . import db
 from flask import Blueprint
+from pprint import pprint as p
 
 test = Blueprint("test", __name__)
 
@@ -71,3 +70,22 @@ def fill():
     db.session.commit()
 
     return str(user.dashboards)
+
+@test.route("/testdb")
+def testdb():
+    # create a user
+    user = User.query.filter_by(email="pedro.abreu@ua.pt").first()
+
+    # create dashboards of user
+    d1 = Dashboard(uid="92384721", nome="dash1", visibilidade=1, url="https://hbvhidbsvvpgv", user_id=user.id)
+    db.session.add(d1)
+    d2 = Dashboard(uid="2348432", nome="dash2", visibilidade=0, url="https://hbvhidbsvvp.fubrf", user_id=user.id)
+    db.session.add(d2)
+
+    # create metrics of user
+    m1 = Basic(url="https://hbvhidbsvvpgv", name="metric1", type="basic")
+    db.session.add(m1)
+    m2 = Http(url="https://hbvhidbsvvpgv", name="metric2", type="http")
+    db.session.add(m2)
+
+    return str(user)

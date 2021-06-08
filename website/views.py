@@ -2,10 +2,8 @@ from flask import Blueprint, request, flash, redirect, url_for, session
 from flask.templating import render_template
 from flask_login import login_required, current_user
 from website.Dashboard import *
-from website.models import Dashboard as Dash, Basic_url, Key_url, Http_url, Token_url
-from website.models import Dashboard as Dash, Token_url
+from website.models import Dashboard as Dash, Basic, Key, Http, Token
 from website.models import User
-import datetime
 from . import db
 
 views = Blueprint("views", __name__)
@@ -191,7 +189,7 @@ def mymetrics():
         # insert flash verifications
 
         if api_type == "public":
-            basic = Basic_url(url=endpoint, name=name, args=fields, period=get_period(period), user_id=current_user.id)
+            basic = Basic(url=endpoint, name=name, args=fields, period=get_period(period), user_id=current_user.id)
             db.session.add(basic)
             db.session.commit()
 
@@ -199,7 +197,7 @@ def mymetrics():
         elif api_type == "key-based-authentication":
             key = request.form.get("key-key")
             
-            keyapi = Key_url(url=endpoint, name=name, args=fields, period=get_period(period), key=key, user_id=current_user.id)
+            keyapi = Key(url=endpoint, name=name, args=fields, period=get_period(period), key=key, user_id=current_user.id)
             db.session.add(keyapi)
             db.session.commit()
             
@@ -208,7 +206,7 @@ def mymetrics():
             token_ckey = request.form.get("token-ckey")
             token_csecret = request.form.get("token-csecret")
             
-            tokenapi = Token_url(url=endpoint, name=name, args=fields, token_url=token_url, period=get_period(period), key=token_ckey, secret=token_csecret, user_id=current_user.id)
+            tokenapi = Token(url=endpoint, name=name, args=fields, token_url=token_url, period=get_period(period), key=token_ckey, secret=token_csecret, user_id=current_user.id)
             db.session.add(tokenapi)
             db.session.commit()
 
@@ -216,7 +214,7 @@ def mymetrics():
             user = request.form.get("http-email")
             passx = request.form.get("http-pass")
 
-            httpapi = Http_url(url=endpoint, name=name, args=fields, period=get_period(period), username=user, key=passx, user_id=current_user.id)
+            httpapi = Http(url=endpoint, name=name, args=fields, period=get_period(period), username=user, key=passx, user_id=current_user.id)
             db.session.add(httpapi)
             db.session.commit()
 

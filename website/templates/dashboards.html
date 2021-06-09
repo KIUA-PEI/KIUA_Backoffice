@@ -47,18 +47,19 @@
                 <th scope="col">Name</th>
                 <th scope="col" style="width: 220px;">Since</th>
                 <th scope="col">Visibility</th>
-                <th scope="col">Link</th>
-                <th scope="col">Delete</th>
+                <th scope="col" style="width: 400px;">Link</th>
+                <th scope="col" style="width: 20px;"></th>
               </tr>
             </thead>
             <tbody>
               {%for dash in current_user.dashboards %}
                 <tr>
-                  <td>
-                    {{dash.nome}}
+                  <td class="align-middle">
+                      {{dash.nome}}
                   </td>
-                  <td>{{dash.date}}</td>
-                  
+                  <td class="align-middle">
+                      {{dash.date}}
+                  </td>
                   <td class="pl-0">
                     <div class="d-flex align-items-center">
                       {% if dash.visibilidade|int() == 1 %}
@@ -74,14 +75,15 @@
                           <button class="btn btn-primary" type="button" >Private</button>
                         </form>
                       {% endif%}
-
                     </div>
                   </td>
-                  
-                  <td><a href="/showdashboard/{{current_user.id}}/{{dash.nome}}">/showdashboard/{{dash.nome}}</a></td>
-                  
+                  <td class="align-middle">
+                    <a href="/showdashboard/{{current_user.id}}/{{dash.nome}}">/showdashboard/{{dash.nome}}</a>
+                  </td>
                   <form>
-                    <td><button type="submit" class="btn fas fa-trash-alt" id="deleteBTN" name="deleteBTN" value="{{ dash.nome }}"></button></td>
+                    <td class="align-middle">
+                      <button type="submit" class="btn fas fa-trash-alt" id="deleteBTN" name="deleteBTN" value="{{ dash.nome }}"></button>
+                    </td>
                   </form>
                   </tr>
               {% endfor %}
@@ -110,16 +112,19 @@
                 {% for dash in user.dashboards %}
                   {% if dash.visibilidade|int() == 1 %}
                   <tr>
-                    <td>
+                    <td class="align-middle">
                       {{dash.nome}}
                     </td>
-                    <td>{{dash.date}}</td>
-                    
-                    <td>{{user.fname}} {{user.lname}}</td>
-                    
-                    <td><a href="/showdashboard/{{user.id}}/{{dash.nome}}">/showdashboard/{{dash.nome}}</a></td>
-                    
-                    </tr>
+                    <td class="align-middle">
+                      {{dash.date}}
+                    </td>
+                    <td class="align-middle">
+                      {{user.fname}} {{user.lname}}
+                    </td>
+                    <td class="align-middle">
+                      <a href="/showdashboard/{{user.id}}/{{dash.nome}}">/showdashboard/{{dash.nome}}</a>
+                    </td>
+                  </tr>
                   {% endif %}
                 {% endfor %}
               {% endfor %}

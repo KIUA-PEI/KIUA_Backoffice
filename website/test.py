@@ -83,9 +83,11 @@ def testdb():
     db.session.add(d2)
 
     # create metrics of user
-    m1 = Basic(url="https://hbvhidbsvvpgv", name="metric1", type="basic")
+    m1 = Basic(url="https://hbvhidbsvvpgv", name="metric1", period=5, periodstr="5 minutos", type="basic", user_id=user.id)
     db.session.add(m1)
-    m2 = Http(url="https://hbvhidbsvvpgv", name="metric2", type="http")
+    m2 = Http(url="https://hbvhidbsvvpgv", name="metric2", period=10, periodstr="10 minutos", type="key", user_id=user.id)
     db.session.add(m2)
+
+    db.session.commit()
 
     return str(user)

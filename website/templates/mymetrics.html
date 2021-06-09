@@ -142,69 +142,28 @@
               <thead>
                 <tr>
                   <th scope="col">Name</th>
-                  <th scope="col" style="width: 120px;">Since</th>
+                  <th scope="col" style="width: 220px;">Since</th>
                   <th scope="col">Query Frequency</th>
-                  <th scope="col">Source Endpoint</th>
-                  <th scope="col">Delete</th>
+                  <th scope="col" style="width: 400px;">Source Endpoint</th>
+                  <th scope="col" style="width: 20px;"></th>
                 </tr>
               </thead>
               <tbody>
-                {% for api in current_user.basic %}
+                {% for api in current_user.metrics %}
                   <tr>
-                    <td>
+                    <td class="align-middle">
                       {{ api.name }}
                     </td>
-                    <td>{{ api.date }}</td>
-                    <td>
-                      <small class="d-block">{{ api.period }}</small>
+                    <td class="align-middle">
+                      {{ api.date }}
                     </td>
-                    <td><a href="/mymetrics">{{ api.url }}</a></td>
-                    <td>
-                        <button type="button" class="btn fas fa-trash-alt"></button>
+                    <td class="align-middle">
+                      {{ api.periodstr }}
                     </td>
-                  </tr>
-                {% endfor %}
-                {% for api in current_user.key %}
-                  <tr>
-                    <td>
-                      {{ api.name }}
+                    <td class="align-middle">
+                      <a href="/mymetrics">{{ api.url }}</a>
                     </td>
-                    <td>{{ api.date }}</td>
-                    <td>
-                      <small class="d-block">{{ api.period }}</small>
-                    </td>
-                    <td><a href="/mymetrics">{{ api.url }}</a></td>
-                    <td>
-                        <button type="button" class="btn fas fa-trash-alt"></button>
-                    </td>
-                  </tr>
-                {% endfor %}
-                {% for api in current_user.http %}
-                  <tr>
-                    <td>
-                      {{ api.name }}
-                    </td>
-                    <td>{{ api.date }}</td>
-                    <td>
-                      <small class="d-block">{{ api.period }}</small>
-                    </td>
-                    <td><a href="/mymetrics">{{ api.url }}</a></td>
-                    <td>
-                        <button type="button" class="btn fas fa-trash-alt"></button>
-                    </td>
-                  </tr>
-                {% endfor %}
-                {% for api in current_user.token %}
-                  <tr>
-                    <td>
-                      {{ api.name }}
-                    </td>
-                    <td>{{ api.date }}</td>
-                    <td>
-                      <small class="d-block">{{ api.period }}</small>
-                    </td>
-                    <td><a href="/mymetrics">{{ api.url }}</a></td>
-                    <td>
+                    <td class="align-middle">
                         <button type="button" class="btn fas fa-trash-alt"></button>
                     </td>
                   </tr>

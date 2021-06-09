@@ -189,7 +189,7 @@ def mymetrics():
         # insert flash verifications
 
         if api_type == "public":
-            basic = Basic(url=endpoint, name=name, args=fields, period=get_period(period), user_id=current_user.id)
+            basic = Basic(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id)
             db.session.add(basic)
             db.session.commit()
 
@@ -197,7 +197,7 @@ def mymetrics():
         elif api_type == "key-based-authentication":
             key = request.form.get("key-key")
             
-            keyapi = Key(url=endpoint, name=name, args=fields, period=get_period(period), key=key, user_id=current_user.id)
+            keyapi = Key(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), key=key, user_id=current_user.id)
             db.session.add(keyapi)
             db.session.commit()
             
@@ -206,7 +206,7 @@ def mymetrics():
             token_ckey = request.form.get("token-ckey")
             token_csecret = request.form.get("token-csecret")
             
-            tokenapi = Token(url=endpoint, name=name, args=fields, token_url=token_url, period=get_period(period), key=token_ckey, secret=token_csecret, user_id=current_user.id)
+            tokenapi = Token(url=endpoint, name=name, args=fields, token_url=token_url, period=period, periodstr=get_period(period), key=token_ckey, secret=token_csecret, user_id=current_user.id)
             db.session.add(tokenapi)
             db.session.commit()
 
@@ -214,7 +214,7 @@ def mymetrics():
             user = request.form.get("http-email")
             passx = request.form.get("http-pass")
 
-            httpapi = Http(url=endpoint, name=name, args=fields, period=get_period(period), username=user, key=passx, user_id=current_user.id)
+            httpapi = Http(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), username=user, key=passx, user_id=current_user.id)
             db.session.add(httpapi)
             db.session.commit()
 

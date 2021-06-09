@@ -49,6 +49,7 @@ class MyMetricas(db.Model, Base):
     date = db.Column(db.DateTime(timezone=True), default=func.now())                    # data de criação
     args = db.Column(db.String(750),nullable=True)
     period = db.Column(db.Integer(), nullable=False)
+    periodstr = db.Column(db.String(30), nullable=True)
     status = db.Column(db.Boolean(),default=True)
     type = db.Column(db.String(50))
 

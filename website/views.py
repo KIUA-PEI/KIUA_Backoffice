@@ -10,8 +10,6 @@ views = Blueprint("views", __name__)
 
 #d = DashTmp("Dashboard1", datetime.datetime.now(), 'Public', "http://127.0.0.1:5000/dashboards")
 
-
-
 #MyDashboards Page
 @views.route("/dashboards", methods=["GET","POST"])
 @login_required

@@ -15,12 +15,14 @@ def login():
     if request.method == "POST":
         email = request.form.get('email')
         password = request.form.get('password')
+        remember = request.form.get('remember')
+        print(remember)
 
         user = User.query.filter_by(email=email).first()
         if user:
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
-                login_user(user, remember=True)
+                login_user(user, remember=remember)
                 return redirect(url_for("views.dashboards"))
             else: 
                 flash('Incorrect password, try again.', category='error')
@@ -60,7 +62,7 @@ def signup():
             new_user = User(email=email, password=generate_password_hash(password, method="sha256") , fname=fname, lname=lname)
             db.session.add(new_user)
             db.session.commit()
-            login_user(new_user, remember=True)
+            login_user(new_user, remember=False)
             flash('Account created with success!', category='success')
             new_user.folder_id = Dashboard.create_folder(str(new_user.id))
             print(new_user.folder_id)

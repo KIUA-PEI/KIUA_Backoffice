@@ -34,6 +34,8 @@ class Dashboard(db.Model):
     date = db.Column(db.DateTime(timezone=True), default=func.now())                    # data de criação
     visibilidade = db.Column(db.Integer, nullable=False)                                # 0 -> privada, 1 -> pública
     url = db.Column(db.String(150), nullable=False)
+    panels = db.Column(db.Integer, unique=False)
+
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
     def __repr__(self):

@@ -101,30 +101,32 @@
                     </ul>
                 </nav>
                 <!-- End of Topbar -->
-                <!-- Begin Page Content -->
                 <!--Error handling messages-->
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            {% if category == 'success' %}
-                                <div class="alert alert-success alter-dismissable fade show" role="alert">
-                                    {{ message }}
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                            {% else %}
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <span>{{ message }}</span>
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times</span>
-                                    </button>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
+                <div class="container-fluid">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                {% if category == 'success' %}
+                                    <div class="alert alert-success alter-dismissable fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <span>{{ message }}</span>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times</span>
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
 
+                <!-- Begin Page Content -->
                 {% block content %}
 
                 {% endblock %}
@@ -140,7 +142,7 @@
             <div class="container my-auto">
                 <div class="copyright text-center my-auto pt-1">
                     <span>
-                        Made with <img src="../static/img/heart.svg" style="height: 12px;"> by <a href="https://kiua-pei.github.io/KIUA_microsite/#team" target="_blank">a team of noobs</a>
+                        Made with <img src="{{ url_for('static', filename='/img/heart.svg') }}" style="height: 12px;"> by <a href="https://kiua-pei.github.io/KIUA_microsite/#team" target="_blank">a team of noobs</a>
                     </span>
                 </div>
             </div>

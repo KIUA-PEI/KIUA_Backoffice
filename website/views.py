@@ -5,6 +5,7 @@ from website.Dashboard import *
 from website.models import Dashboard as Dash, Basic, Key, Http, Token
 from website.models import User
 from . import db
+from influxdb import InfluxDBClient
 
 views = Blueprint("views", __name__)
 
@@ -136,7 +137,7 @@ def createdashboard(dname):
             print(current_user.folder_id)
             uid = dbx.send_dash(current_user.folder_id)
 
-            dash = Dash(uid=uid, nome=dname, visibilidade=0, url="http://40.68.96.164:3000/d/"+str(uid)+"/"+str(dname), user_id = current_user.id, panels =  len(session.get('pnamelist')))
+            dash = Dash(uid=uid, nome=dname, visibilidade=0, url="http://40.68.96.164:3000/d/"+str(uid)+"/"+str(dname), user_id = current_user.id, panels= len(session.get('pnamelist')))
             db.session.add(dash)
             db.session.commit()
 
@@ -192,6 +193,8 @@ def mymetrics():
             db.session.commit()
 
 
+
+
         elif api_type == "key-based-authentication":
             key = request.form.get("key-key")
             
@@ -215,6 +218,8 @@ def mymetrics():
             httpapi = Http(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), username=user, key=passx, user_id=current_user.id)
             db.session.add(httpapi)
             db.session.commit()
+
+        
 
     return render_template("mymetrics.html")
 

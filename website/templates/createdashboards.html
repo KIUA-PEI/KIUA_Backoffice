@@ -17,22 +17,66 @@
           <div class="panel">
             <br>
             <input type="checkbox" id="m1" name="m1" value="SELECT Capacidade, Livres FROM parking WHERE Nome = 'Biblioteca' AND $timeFilter">
-            <label for="vehicle1"> Free parkings in the library</label><br>
+            <label for="i1"> Free parkings in the library</label><br>
             <input type="checkbox" id="m1" name="m1" value="SELECT Capacidade, Ocupado FROM parking WHERE Nome = 'Biblioteca' AND $timeFilter">
-            <label for="vehicle2"> Occupied parkings in the library</label><br>
-            <input type="checkbox" id="m1" name="m1" value="SCP<3">
-            <label for="vehicle3"> Query 4 </label><br><br>
+            <label for="i2"> Occupied parkings in the library</label><br>
+            <input type="checkbox" id="m1" name="m1" value=" SELECT Capacidade, Livres FROM parking WHERE Nome = 'ESTGA' AND $timeFilter">
+            <label for="i3"> Free Parkings in ESTGA </label><br>
+            <input type="checkbox" id="m1" name="m1" value="  SELECT Capacidade, Ocupado FROM parking WHERE Nome = 'ESTGA' AND $timeFilter">
+            <label for="i4"> Occupied Parkings in ESTGA </label><br>
+            <input type="checkbox" id="m1" name="m1" value="  SELECT Capacidade, Livres FROM parking WHERE Nome = 'Incubadora' AND $timeFilter">
+            <label for="i5"> Free Parkings in Incubadora </label><br>
+            <input type="checkbox" id="m1" name="m1" value="  SELECT Capacidade, Ocupado FROM parking WHERE Nome = 'Incubadora' AND $timeFilter">
+            <label for="i6"> Occupied Parkings in Incubadora </label><br>
+            <input type="checkbox" id="m1" name="m1" value="  SELECT Capacidade, Livres FROM parking WHERE Nome = 'Subterraneo' AND $timeFilter">
+            <label for="i7"> Free Parkings in Subterraneo </label><br>
+            <input type="checkbox" id="m1" name="m1" value="  SELECT Capacidade, Ocupado FROM parking WHERE Nome = 'Subterraneo' AND $timeFilter">
+            <label for="i8"> Occupied Parkings in Subterraneo </label><br>
+            <input type="checkbox" id="m1" name="m1" value="  SELECT Capacidade, Livres FROM parking WHERE Nome = 'Residencias' AND $timeFilter">
+            <label for="i9"> Free Parkings in Residencias </label><br>
+            <input type="checkbox" id="m1" name="m1" value="  SELECT Capacidade, Ocupado FROM parking WHERE Nome = 'Residencias' AND $timeFilter">
+            <label for="i10"> Free Parkings in Residencias </label><br>
           </div>
 
           <button type="button" class="accordion">Wifi Devices</button>
           <div class="panel">
             <br>
             <input type="checkbox" id="m1" name="m1" value="SELECT sum(wifiCount) as TotalUsers FROM wifiusr WHERE $timeFilter GROUP BY time(1h) fill(null)">
-            <label for="vehicle1"> Total devices connected to ua</label><br>
+            <label for="w1"> Total devices connected to ua</label><br>
             <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersBiblioteca FROM wifiusr WHERE Nome = 'biblioteca' AND $timeFilter">
-            <label for="vehicle2"> Users connected to library wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= 'SCP<3'>
-            <label for="vehicle3"> Query 3</label><br><br>
+            <label for="w2"> Total devices connected to library wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersAAUAV FROM wifiusr WHERE Nome = 'aauav' AND $timeFilter">
+            <label for="w3"> Total devices connected to aauav wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersCICFANO FROM wifiusr WHERE Nome = 'cicfano' AND $timeFilter">
+            <label for="w4"> Total devices connected to cicfano wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDAO FROM wifiusr WHERE Nome = 'dao' AND $timeFilter">
+            <label for="w5"> Total devices connected to dao wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDBIO FROM wifiusr WHERE Nome = 'dbio' AND $timeFilter">
+            <label for="w6"> Total devices connected to dbio wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDSCPT FROM wifiusr WHERE Nome = 'dscpt' AND $timeFilter">
+            <label for="w7"> Total devices connected to dscpt wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDECA FROM wifiusr WHERE Nome = 'deca' AND $timeFilter">
+            <label for="w8"> Total devices connected to deca wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDETI FROM wifiusr WHERE Nome = 'deti' AND $timeFilter">
+            <label for="w9"> Total devices connected to deti wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDMAT FROM wifiusr WHERE Nome = 'dmat' AND $timeFilter">
+            <label for="w10"> Total devices connected to dmat wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDCIVIL FROM wifiusr WHERE Nome = 'decivil' AND $timeFilter">
+            <label for="w11"> Total devices connected to dcivil wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDEGEIT FROM wifiusr WHERE Nome = 'degeit' AND $timeFilter">
+            <label for="w12"> Total devices connected to dgeit wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDEP FROM wifiusr WHERE Nome = 'dep' AND $timeFilter">
+            <label for="w13"> Total devices connected to dep wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDFIS FROM wifiusr WHERE Nome = 'fis' AND $timeFilter">
+            <label for="w14"> Total devices connected to dfis wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersIT FROM wifiusr WHERE Nome = 'it' AND $timeFilter">
+            <label for="w15"> Total devices connected to it wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersIETTA FROM wifiusr WHERE Nome = 'ietta' AND $timeFilter">
+            <label for="w16"> Total devices connected to ietta wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersISCA FROM wifiusr WHERE Nome = 'isca' AND $timeFilter">
+            <label for="w17"> Total devices connected to isca wifi</label><br>
+            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersGEO FROM wifiusr WHERE Nome = 'geo' AND $timeFilter">
+            <label for="w18"> Total devices connected to dgeo wifi</label><br>
           </div>
           <br><br>
 

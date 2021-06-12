@@ -1,4 +1,5 @@
 
+from sqlalchemy.sql.expression import null
 from website import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
@@ -55,6 +56,8 @@ class MyMetricas(db.Model, Base):
     status = db.Column(db.Boolean(),default=True)
     type = db.Column(db.String(50))
 
+    kpi = db.relationship("MyKpi", backref="metrics", lazy=True)
+
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
     __mapper_args__ = {
@@ -108,6 +111,18 @@ class Token(MyMetricas):
     __mapper_args__ = {
         'polymorphic_identity':'token',
     }
+
+# indicadores gerados para as métricas introduzidas pelo utilizador
+# tem nome e query gerado automaticamente
+class MyKpi(db.Model):
+    __tablename__= 'mykpi'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.String(100), nullable=True)
+    query = db.Column(db.String(300), nullable=True)
+
+    my_metrica_id = db.Column(db.Integer, db.ForeignKey("mymetricas.id"))
 
 ## ----------
 # métricas default do website

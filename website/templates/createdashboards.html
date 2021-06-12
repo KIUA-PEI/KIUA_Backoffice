@@ -35,6 +35,18 @@
             <label for="vehicle3"> Query 3</label><br><br>
           </div>
           <br><br>
+          {% for metric in current_user.metrics %}
+          <button type="button" class="accordion">{{ metric.name }}</button>
+          <div class="panel">
+            <br>
+            {% for kpi in metric.kpi%}
+            <input type="checkbox" id="{{kpi.name}}{{ loop.index0 }}" name="{{kpi.name}}{{ loop.index0 }}" value="{{ kpi.query }}">
+            <label>{{ kpi.name }}</label>
+            <br>
+            {% endfor %}
+          </div>
+          {% endfor %}
+          <br><br>
 
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dashModal" style="float: right;">Add+</button>
           
@@ -97,7 +109,6 @@
                 </form>
                 {% endfor %}
             {% endif %}
-            
           </div>
         </div>
 
@@ -109,9 +120,6 @@
 
         </div>
     </div>
-
-
-
     <br>
   </div>
   <script>

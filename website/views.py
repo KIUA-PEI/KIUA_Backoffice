@@ -5,7 +5,7 @@ from website.Dashboard import *
 from website.models import Dashboard as Dash, Basic, Key, Http, Token
 from website.models import User
 from . import db
-from influxdb import InfluxDBClient
+from influxdb_client import InfluxDBClient
 
 views = Blueprint("views", __name__)
 
@@ -185,23 +185,45 @@ def mymetrics():
         api_type = request.form.get("dropdown-api-type")
         fields =request.form.get("fields")
 
-        # insert flash verifications
+        # flash verifications
+        if name == "":
+            flash('ERROR: Invalid Dashboard name', category='error')
+        elif Dash.query.filter_by(user_id = current_user.id, nome = name).first() != None:
+            flash('ERROR: Dashboard name already exists, choose a new one', category='error')
 
+
+        # Basic
         if api_type == "public":
             basic = Basic(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id)
             db.session.add(basic)
             db.session.commit()
 
+            r = requests.get(daemons_api+'/Daemon/Start/Basic',
+                {"id":basic.id,
+                "url": basic.url,
+                "args": basic.args,
+                "period":basic.period},
+                headers={'Authorization':daemons_api_key})
+            print(r.status_code)
 
-
-
+        # Key
         elif api_type == "key-based-authentication":
             key = request.form.get("key-key")
             
             keyapi = Key(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), key=key, user_id=current_user.id)
             db.session.add(keyapi)
             db.session.commit()
-            
+
+            r = requests.get(daemons_api+'/Daemon/Start/Key',
+                {"id":keyapi.id,
+                "url": keyapi.url,
+                "key": keyapi.key,
+                "args": keyapi.args,
+                "period":keyapi.period},
+                headers={'Authorization': daemons_api_key})
+            # print(r.status_code)
+
+        # Token
         elif api_type == "bearer-token-based-authentication":
             token_url = request.form.get("token-url")
             token_ckey = request.form.get("token-ckey")
@@ -211,6 +233,18 @@ def mymetrics():
             db.session.add(tokenapi)
             db.session.commit()
 
+            r = requests.get(daemons_api+'/Daemon/Start/Token',
+                {"id":tokenapi.id,
+                "url": tokenapi.url,
+                "token_url": tokenapi.token_url,
+                "secret": tokenapi.secret,
+                "key": tokenapi.key,
+                "period":tokenapi.period,
+                "args": tokenapi.args},
+                headers={'Authorization':daemons_api_key})
+            # print(r.status_code)
+
+        # Http  
         elif api_type == "http-authentication":
             user = request.form.get("http-email")
             passx = request.form.get("http-pass")
@@ -219,7 +253,14 @@ def mymetrics():
             db.session.add(httpapi)
             db.session.commit()
 
-        
+            r = requests.get(daemons_api+'/Daemon/Start/Http',
+                {"id":httpapi.id,
+                "url": httpapi.url,
+                "username": httpapi.username,
+                "key": httpapi.key,
+                "period": httpapi.period,
+                "args": httpapi.args},
+                headers={'Authorization':daemons_api_key})
 
     return render_template("mymetrics.html")
 

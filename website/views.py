@@ -2,7 +2,7 @@ from flask import Blueprint, request, flash, redirect, url_for, session
 from flask.templating import render_template
 from flask_login import login_required, current_user
 from website.Dashboard import *
-from website.models import Dashboard as Dash, Basic, Key, Http, Token
+from website.models import Dashboard as Dash, Basic, Key, Http, Metrics, Token
 from website.models import User
 from . import db
 from influxdb_client import InfluxDBClient
@@ -62,32 +62,31 @@ def dashboards():
 @views.route("/createdashboard/<dname>", methods=["GET", "POST"])
 @login_required
 def createdashboard(dname):
-
+    defaultmetrics = Metrics.query.all()
     #Obter dados necessários para construir os vários painéis da dashboard
     if request.method == "POST":
         if request.form.get('create') == 'CreatePanel':
-
             query1 = request.form.getlist("m1")
             #Caso não sejam dadas métricas/indicadores -> ERRO
             if query1 == []:
                 flash('ERROR: No metrics were choosen for the graph', category='error')
-                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
+                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'], defaultmetrics=defaultmetrics)
             
             panelname = request.form.get("panelname")
             #Caso o nome do painel seja inválido -> ERRO
             if panelname == "":
                 flash('ERROR: Invalid panel name', category='error')
-                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
+                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'], defaultmetrics=defaultmetrics)
             #Caso o nome do painel já tenha sido usado -> ERRO
             elif panelname in session.get('pnamelist'):
                 flash('ERROR: Panel name was already used', category='error')
-                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
+                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'], defaultmetrics=defaultmetrics)
             
             paneltype = request.form.getlist("check")
             #Caso não seja fornecido tipo do painel -> ERRO
             if paneltype == []:
                 flash('ERROR: Graph type was not indicated', category='error')
-                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
+                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'], defaultmetrics=defaultmetrics)
             
 
 
@@ -115,15 +114,14 @@ def createdashboard(dname):
             print(session['ptypelist'])
             print(session['querylist'])
 
-            return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
+            return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'], defaultmetrics=defaultmetrics)
     
     elif request.method == "GET":
         if request.args.get('dash', '') == 'CreateDash':
-            
             #Caso tente criar uma dashboard sem ter especificado suas defenições -> ERRO
             if session.get('pnamelist') == [] and session.get('ptypelist') == []:
                 flash('ERROR: Dashboard especifications were not indicated', category='error')
-                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
+                return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'], defaultmetrics=defaultmetrics)
             
             #Criar dashboard
             dbx = Dashboard(None, dname)
@@ -170,9 +168,9 @@ def createdashboard(dname):
             session['ptypelist'].pop(i)
             session['querylist'].pop(i)
 
-            return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'])
-   
-    return render_template("createdashboards.html", dsh = dname, pname=None, ptype=None)
+            return render_template("createdashboards.html", dsh = dname, pname=session['pnamelist'], ptype=session['ptypelist'], defaultmetrics=defaultmetrics)
+
+    return render_template("createdashboards.html", dsh = dname, pname=None, ptype=None, defaultmetrics=defaultmetrics)
 
 #My Metrics Page
 @views.route("/mymetrics", methods=["GET", "POST"])

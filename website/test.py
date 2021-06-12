@@ -5,36 +5,61 @@ from pprint import pprint as p
 
 test = Blueprint("test", __name__)
 
-@test.route("/metricasdb")
+@test.route("/filldatabasedefaultmetrics")
 def metricas():
     data = [
-        ["Estacionamentos", 
-            [   "num. lugares ocupados Residencias", 
-                "num. lugares ocupados Biblioteca", 
-                "variação num. lugares ocupados Residencias", 
-                "variação num. lugares ocupados Biblioteca", 
-                "num. total de lugares ocupados em todos os estacionamentos"]
-            ], 
-        ["Wifi Users", 
+        [
+            "Estacionamentos", 
+            "Descrição dos parques de estacionamento da UA",
             [
-                "num. disp. ligados na biblioteca",
-                "num. disp. ligados no Deti",
-                "num. disp. ligados no CPCT",
-                "variação num. disp. ligados na biblioteca",
-                "variação num. disp. ligados no Deti",
-                "variação num. disp. ligados no CPCT",
-                "num. de disp. ligados em todos os departamentos edifícios"
+                ["Free parkings in the library", "SELECT Livre, Capacidade FROM parking WHERE Nome = 'Biblioteca' AND $timeFilter"],
+                ["Occupied parkings in the library", "SELECT Ocupado, Capacidade FROM parking WHERE Nome = 'Biblioteca' AND $timeFilter"],
+                ["Free Parkings in ESTGA" , "SELECT Livre, Capacidade FROM parking WHERE Nome = 'ESTGA' AND $timeFilter"],
+                ["Occupied Parkings in ESTGA" , "SELECT Ocupado, Capacidade FROM parking WHERE Nome = 'ESTGA' AND $timeFilter"],
+                ["Free Parkings in Incubadora" , "SELECT Livre, Capacidade FROM parking WHERE Nome = 'Incubadora' AND $timeFilter"],
+                ["Occupied Parkings in Incubadora" , "SELECT Ocupado, Capacidade FROM parking WHERE Nome = 'Incubadora' AND $timeFilter"],
+                ["Free Parkings in Subterraneo" , "SELECT Livre, Capacidade FROM parking WHERE Nome = 'Subterraneo' AND $timeFilter"],
+                ["Occupied Parkings in Subterraneo" , "SELECT Ocupado, Capacidade FROM parking WHERE Nome = 'Subterraneo' AND $timeFilter"],
+                ["Free Parkings in Residencias" , "  SELECT Livre, Capacidade FROM parking WHERE Nome = 'Residencias' AND $timeFilter"],
+                ["Occupied Parkings in Residencias" , "SELECT Ocupado, Capacidade FROM parking WHERE Nome = 'Residencias' AND $timeFilter"]
+            ]
+        ], 
+        [
+            "Dispositivos ligados ao wi-fi",
+            "Descreição dos dispositivos ligados à rede de Wi-fi",
+            [ 
+                ["Total devices connected to ua", "SELECT sum(wifiCount) as TotalUsers FROM wifiusr WHERE $timeFilter GROUP BY time(1h) fill(null)"],
+                ["Total devices connected to library wifi", "SELECT wifiCount as UsersBiblioteca FROM wifiusr WHERE Nome = 'biblioteca' AND $timeFilter"],
+                ["Total devices connected to aauav wifi", "SELECT wifiCount as UsersAAUAV FROM wifiusr WHERE Nome = 'aauav' AND $timeFilter"], 
+                ["Total devices connected to cicfano wifi", "SELECT wifiCount as UsersCICFANO FROM wifiusr WHERE Nome = 'cicfano' AND $timeFilter"],
+                ["Total devices connected to dao wifi", "SELECT wifiCount as UsersDAO FROM wifiusr WHERE Nome = 'dao' AND $timeFilter"],
+                ["Total devices connected to dbio wifi", "SELECT wifiCount as UsersDBIO FROM wifiusr WHERE Nome = 'dbio' AND $timeFilter"],
+                ["Total devices connected to dscpt wifi", "SELECT wifiCount as UsersDSCPT FROM wifiusr WHERE Nome = 'dscpt' AND $timeFilter"],
+                ["Total devices connected to deca wifi", "SELECT wifiCount as UsersDECA FROM wifiusr WHERE Nome = 'deca' AND $timeFilter"],
+                ["Total devices connected to deti wifi", "SELECT wifiCount as UsersDETI FROM wifiusr WHERE Nome = 'deti' AND $timeFilter"],
+                ["Total devices connected to dmat wifi", "SELECT wifiCount as UsersDMAT FROM wifiusr WHERE Nome = 'dmat' AND $timeFilter"],
+                ["Total devices connected to dcivil wifi", "SELECT wifiCount as UsersDCIVIL FROM wifiusr WHERE Nome = 'decivil' AND $timeFilter"],
+                ["Total devices connected to dgeit wifi", "SELECT wifiCount as UsersDEGEIT FROM wifiusr WHERE Nome = 'degeit' AND $timeFilter"],
+                ["Total devices connected to dep wifi", "SELECT wifiCount as UsersDEP FROM wifiusr WHERE Nome = 'dep' AND $timeFilter"],
+                ["Total devices connected to dfis wifi", "SELECT wifiCount as UsersDFIS FROM wifiusr WHERE Nome = 'fis' AND $timeFilter"],
+                ["Total devices connected to it wifi", "SELECT wifiCount as UsersIT FROM wifiusr WHERE Nome = 'it' AND $timeFilter"],
+                ["Total devices connected to ietta wifi", "SELECT wifiCount as UsersIETTA FROM wifiusr WHERE Nome = 'ietta' AND $timeFilter"],
+                ["Total devices connected to isca wifi", "SELECT wifiCount as UsersISCA FROM wifiusr WHERE Nome = 'isca' AND $timeFilter"],
+                ["Total devices connected to dgeo wifi" , "SELECT wifiCount as UsersGEO FROM wifiusr WHERE Nome = 'geo' AND $timeFilter"],
             ]
         ]
     ]
     for d in data:
-        db.session.add(Metrics(name=d[0]))
-        metrica_id = Metrics.query.filter_by(name=d[0]).first().id
-        for kpi in d[1]:
-            db.session.add(Kpi(name=kpi, metrica_id=metrica_id))
+        m = Metrics(name=d[0], description=d[1])
+        db.session.add(m)
         db.session.commit()
+        for kpi in d[2]:
+            k = Kpi(name=kpi[0], query=kpi[1], metrica_id=m.id)
+            db.session.add(k)
+            db.session.commit()
+    db.session.commit()
 
-    return "added to db"
+    return "successfully added to db"
 
 @test.route("/utilizadores")
 def utilizadores():
@@ -91,3 +116,4 @@ def testdb():
     db.session.commit()
 
     return str(user)
+

@@ -195,14 +195,20 @@ def mymetrics():
             basic = Basic(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id)
             db.session.add(basic)
             db.session.commit()
+            print("pronto a enviar...")
+            print("id " + str(basic.id))
+            print("basic.url " + basic.url)
+            print("basic.period " + str(get_int(basic.period)))
+            print("args "+ basic.args)
 
-            r = requests.get(daemons_api+'/Daemon/Start/Basic',
+            r = requests.get(daemons_api+'/Daemon/Add/Basic',
                 {"id":basic.id,
                 "url": basic.url,
-                "args": basic.args,
-                "period":basic.period},
-                headers={'Authorization':daemons_api_key})
-            print(r.status_code)
+                "period":get_int(basic.period),
+                "args": basic.args,},
+                headers={'Authorization': daemons_api_key})
+            print("response status: "+str(r.status_code))
+            print("response text: "+str(r.text))
 
         # Key
         elif api_type == "key-based-authentication":
@@ -212,12 +218,12 @@ def mymetrics():
             db.session.add(keyapi)
             db.session.commit()
 
-            r = requests.get(daemons_api+'/Daemon/Start/Key',
+            r = requests.get(daemons_api+'/Daemon/Add/Key',
                 {"id":keyapi.id,
                 "url": keyapi.url,
                 "key": keyapi.key,
                 "args": keyapi.args,
-                "period":keyapi.period},
+                "period":get_int(keyapi.period)},
                 headers={'Authorization': daemons_api_key})
             # print(r.status_code)
 
@@ -231,13 +237,13 @@ def mymetrics():
             db.session.add(tokenapi)
             db.session.commit()
 
-            r = requests.get(daemons_api+'/Daemon/Start/Token',
+            r = requests.get(daemons_api+'/Daemon/Add/Token',
                 {"id":tokenapi.id,
                 "url": tokenapi.url,
                 "token_url": tokenapi.token_url,
                 "secret": tokenapi.secret,
                 "key": tokenapi.key,
-                "period":tokenapi.period,
+                "period":get_int(tokenapi.period),
                 "args": tokenapi.args},
                 headers={'Authorization':daemons_api_key})
             # print(r.status_code)
@@ -251,14 +257,16 @@ def mymetrics():
             db.session.add(httpapi)
             db.session.commit()
 
-            r = requests.get(daemons_api+'/Daemon/Start/Http',
+            r = requests.get(daemons_api+'/Daemon/Add/Http',
                 {"id":httpapi.id,
                 "url": httpapi.url,
                 "username": httpapi.username,
                 "key": httpapi.key,
-                "period": httpapi.period,
+                "period": get_int(httpapi.period),
                 "args": httpapi.args},
                 headers={'Authorization':daemons_api_key})
+
+        
 
     return render_template("mymetrics.html")
 
@@ -309,3 +317,13 @@ def get_period(str):
         return "1 hora"
     elif str == "diariamente":
         return "1 dia"
+
+def get_int(str):
+    if str == "5-em-5-minutos":
+        return 5
+    elif str == "30-em-30-minutos":
+        return 30
+    elif str == "hora-a-hora":
+        return 60
+    elif str == "diariamente":
+        return 1440

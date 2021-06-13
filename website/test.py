@@ -2,6 +2,9 @@ from website.models import *
 from . import db
 from flask import Blueprint
 from pprint import pprint as p
+from influxdb import InfluxDBClient
+from website.config import *
+import requests
 
 test = Blueprint("test", __name__)
 
@@ -117,3 +120,34 @@ def testdb():
 
     return str(user)
 
+
+@test.route("/getmeasurements")
+def test_measurements():
+
+    #Open Client
+    client = InfluxDBClient(host='40.68.96.164', port=8086, username="peikpis", password="peikpis_2021")
+
+    #Switch to Metrics database
+    print("Test:")
+    client.switch_database('Test')
+    print(client.query("show measurements"))
+    print("Metrics")
+    client.switch_database('Metrics')
+    print(client.query("show measurements"))
+    print("_internal")
+    client.switch_database('_internal')
+    print(client.query("show measurements"))
+
+    return "gude"
+
+
+@test.route("/delete/<id>")
+def delete_id(id):
+    print("pronto a enviar...")
+    r = requests.get(daemons_api+'/Daemon/Remove/Basic',
+        {"id":id},
+        headers={'Authorization': daemons_api_key})
+    print(r.status_code)
+    print(r.text)
+
+    return str(r)

@@ -36,21 +36,17 @@
           </div>
           {% endfor %}
           <br><br>
-
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dashModal" style="float: right;">Add+</button>
-          
           <!--Modal para fazer submit das preferências para criar uma dashboard-->
           <div class="modal fade" id="dashModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
-
                 <div class="modal-header">
                   <h5 class="modal-title" id="exampleModalLabel">Name your panel</h5>
                   <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                   </button>
                 </div>
-
                 <div class="modal-body">
                   <input type="text" id="panelname" name="panelname" placeholder="Panel name..">
                   <br><br>
@@ -68,7 +64,6 @@
                   <input type="checkbox" id="v6" name="check" value="stat" onclick="onlyOne(this)">
                   <label for="v6"> Stat</label>
                 </div>
-
                 <div class="modal-footer">
                   <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                   <button class="btn btn-primary" type="submit" name="create" value="CreatePanel">Create</button>
@@ -78,7 +73,6 @@
           </div>
         </form>
       </div>
-
       <!--FORM - Coluna Lado direito-->
       <div class="column">
         <h2>Your Dashboard</h2>

@@ -6,7 +6,7 @@
     <br>
     
     <div class="content">
-      <div class="container">
+      <!--<div class="container">
         <div class="row">
           <div class="col-sm-12 justify-content-left" style="text-align: left;">
             <h2>Your Dashboard - {{dname}}</h2><br>
@@ -17,11 +17,12 @@
           </div><br>
         </div>
         <br>
-        {% for link in urls %}
-        <iframe src="{{ link }}" width="960" height="370" frameborder="0"></iframe><br><br>
-        {% endfor %}
-      </div>
+      </div>-->
     <br>
+    {% for link in urls %}
+      <iframe src="{{ link }}" width="500" height="240" frameborder="0"></iframe>
+    {% endfor %}
+    <br><br><br><br>
 </div>
 
           <!-- Dashboard Modal-->

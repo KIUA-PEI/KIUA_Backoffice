@@ -71,13 +71,29 @@
             <!-- Main Content -->
             <div id="content">
                 <!-- Topbar -->
+
+                
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
                     <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
+                
+                {% if dname %}   
+                <div class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    <h4>Your Dashboard: {{dname}}</h4>
+                </div>
+                {% endif %}
+                    
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto d-flex align-items-center">
+                        {% if dname %}
+                        <form>
+                        <button type="submit" class="btn btn-secondary" id="theme" name="theme" value="{{ theme }}">{{theme}} Theme</button>&nbsp;
+                        <button type="button" style="float: right;" class="btn btn-primary" data-toggle="modal" data-target="#dashModal">Help</button>&nbsp;&nbsp;&nbsp;
+                        </form>
+                        <div class="topbar-divider d-none d-sm-block"></div>
+                        {% endif %}
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" style="padding: 0;"

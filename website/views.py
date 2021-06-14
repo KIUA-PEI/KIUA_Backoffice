@@ -5,7 +5,6 @@ from website.Dashboard import *
 from website.models import Dashboard as Dash, Basic, Key, Http, Metrics, Token
 from website.models import User
 from . import db
-from influxdb_client import InfluxDBClient
 
 views = Blueprint("views", __name__)
 

@@ -138,11 +138,24 @@ def test_measurements():
     client.switch_database('_internal')
     print(client.query("show measurements"))
 
+    client.close()
+
     return "gude"
 
 
 @test.route("/delete/<id>")
 def delete_id(id):
+    #Open Client
+    client = InfluxDBClient(host='40.68.96.164', port=8086, username="peikpis", password="peikpis_2021")
+
+    #Switch to Metrics database
+    print("Metrics:")
+    client.switch_database('Metrics')
+    print(client.query("show measurements"))
+    print(client.query("drop measurement \"" + id+"\""))
+    print(client.query("show measurements"))
+    client.close()
+
     print("pronto a enviar...")
     r = requests.get(daemons_api+'/Daemon/Remove/Basic',
         {"id":id},

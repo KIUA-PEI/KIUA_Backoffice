@@ -40,5 +40,3 @@ def create_database(app):
         print("\t -> Created db! <-")
 
         
-
-        

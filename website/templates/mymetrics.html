@@ -128,7 +128,7 @@
                         <input type="" id="fields" name="fields" style="opacity: 70%; width: 300px;" placeholder="field1, field2, field3, ...">
                       </div>
                       <div class="modal-footer">
-                          <button class="btn btn-primary mr-auto" type="button" data-dismiss="modal">Help</button>
+                          <!--<button class="btn btn-primary mr-auto" type="button" data-toggle="modal" data-target="#help">Help</button>-->
                           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                           <button class="btn btn-primary" name="createbtn" value="btn" method="post" type="submit">Create</button>
                       </div>
@@ -163,9 +163,11 @@
                     <td class="align-middle">
                       <a href="/mymetrics">{{ api.url }}</a>
                     </td>
-                    <td class="align-middle">
-                        <button type="button" class="btn fas fa-trash-alt"></button>
-                    </td>
+                    <form>
+                      <td class="align-middle">
+                        <button type="submit" class="btn fas fa-trash-alt" id="deleteBTN" name="deleteBTN" value="{{ api.id }}"></button>
+                      </td>
+                    </form>
                   </tr>
                 {% endfor %}
               </tbody>

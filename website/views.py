@@ -2,19 +2,21 @@ from flask import Blueprint, request, flash, redirect, url_for, session
 from flask.templating import render_template
 from flask_login import login_required, current_user
 from website.Dashboard import *
-from website.models import Dashboard as Dash, Basic, Key, Http, Metrics, Token
+from website.models import Dashboard as Dash, Basic, Key, Http, Metrics, Token, MyMetricas, Metrics, Kpi
 from website.models import User
 from . import db
-from influxdb_client import InfluxDBClient
+from influxdb import InfluxDBClient
+from website.influxqueries import *
 
 views = Blueprint("views", __name__)
-
-#d = DashTmp("Dashboard1", datetime.datetime.now(), 'Public', "http://127.0.0.1:5000/dashboards")
 
 #MyDashboards Page
 @views.route("/dashboards", methods=["GET","POST"])
 @login_required
 def dashboards():
+    #Se métricas default não estão no site ainda carregá-las
+    if Metrics.query.filter(Metrics.id == 1).first() == None:
+        load_metrics()
     other_users = (User.query.filter(User.id!=current_user.id).all())
 
     session['pnamelist'] = []
@@ -58,11 +60,17 @@ def dashboards():
     return render_template("dashboards.html", other_users=other_users)
 
 
+
+
 #Create Dashboard Page
 @views.route("/createdashboard/<dname>", methods=["GET", "POST"])
 @login_required
 def createdashboard(dname):
     defaultmetrics = Metrics.query.all()
+    for m in defaultmetrics:
+        print(m.kpis)
+    
+
     #Obter dados necessários para construir os vários painéis da dashboard
     if request.method == "POST":
         if request.form.get('create') == 'CreatePanel':
@@ -150,6 +158,8 @@ def createdashboard(dname):
             session['ptypelist'] = []
             session['querylist'] = []
 
+            flash('SUCESS: Dashboard created sucessfully', category='success')
+
             return redirect(url_for("views.dashboards"))
         #Cancelar todo o processo de criar uma dashboard
         elif request.args.get('dash', '') == 'Cancel':
@@ -172,6 +182,9 @@ def createdashboard(dname):
 
     return render_template("createdashboards.html", dsh = dname, pname=None, ptype=None, defaultmetrics=defaultmetrics)
 
+
+
+
 #My Metrics Page
 @views.route("/mymetrics", methods=["GET", "POST"])
 @login_required
@@ -183,24 +196,33 @@ def mymetrics():
         api_type = request.form.get("dropdown-api-type")
         fields =request.form.get("fields")
 
-        # flash verifications
+        #Nome inválido
         if name == "":
-            flash('ERROR: Invalid Dashboard name', category='error')
-        elif Dash.query.filter_by(user_id = current_user.id, nome = name).first() != None:
-            flash('ERROR: Dashboard name already exists, choose a new one', category='error')
+            flash('ERROR: Invalid Metric name', category='error')
+            return render_template("mymetrics.html")
+        #Caso já exista uma métrica com um nome igual
+        elif MyMetricas.query.filter_by(user_id = current_user.id, name = name).first() != None:
+            flash('ERROR: Metric name already exists, choose a new one', category='error')
+            return render_template("mymetrics.html")
+        #Caso não seja especificado endpoint
+        elif endpoint == "":
+            flash('ERROR: Source endpoint not specified', category='error')
+            return render_template("mymetrics.html")
 
 
-        # Basic
+        #Basic
         if api_type == "public":
             basic = Basic(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id)
             db.session.add(basic)
             db.session.commit()
+            
             print("pronto a enviar...")
             print("id " + str(basic.id))
             print("basic.url " + basic.url)
             print("basic.period " + str(get_int(basic.period)))
             print("args "+ basic.args)
 
+            #Enviar pedido para a API
             r = requests.get(daemons_api+'/Daemon/Add/Basic',
                 {"id":basic.id,
                 "url": basic.url,
@@ -208,6 +230,19 @@ def mymetrics():
                 "args": basic.args,},
                 headers={'Authorization': daemons_api_key})
             print("response status: "+str(r.status_code))
+            
+            #Caso a response da API dê erro 
+            if r.status_code != 200 and r.status_code != 201:
+                flash('ERROR: Creating metric, Response Code:'+str(r.status_code)+" Response: "+str(r.text), category='error')
+                db.session.delete(basic)
+                db.session.commit()
+                return render_template("mymetrics.html")
+            
+            #Gerar querys automaticamente
+            querys = get_querys(str(basic.id))
+            print(querys)
+
+            flash('SUCESS: Metric added sucessfully', category='success')
             print("response text: "+str(r.text))
 
         # Key
@@ -265,10 +300,42 @@ def mymetrics():
                 "period": get_int(httpapi.period),
                 "args": httpapi.args},
                 headers={'Authorization':daemons_api_key})
+    
+    
+    elif request.method == "GET":
+        #Apagar uma métrica
+        if request.args.get('deleteBTN', '') != "": 
+            #Obter a métrica
+            basic = Basic.query.filter_by(user_id = current_user.id, id = request.args.get('deleteBTN', '')).first()
+            print(basic.id)
+            #Eliminar a métrica da API
+            r = requests.get(daemons_api+'/Daemon/Remove/Basic',
+                {"id":basic.id},
+                headers={'Authorization': daemons_api_key})
+            print(r.status_code)
+            print(r.text)
 
+            #Eliminar a métrica da base de dados influxDB
+            client = InfluxDBClient(host='40.68.96.164', port=8086, username="peikpis", password="peikpis_2021")
+
+            client.switch_database('Metrics')
+            print(client.query("show measurements"))
+            print(client.query("drop measurement \"" + str(basic.id)+"\""))
+            print(client.query("show measurements"))
+            client.close()
+
+            #Eliminar a métrica da base de dados backoffice
+            db.session.delete(basic)
+            db.session.commit()
+
+            flash('SUCESS: Metric deleted sucessfully', category='success')
         
 
     return render_template("mymetrics.html")
+
+
+
+
 
 #Show a dashboard page
 @views.route("/showdashboard/<userid>/<dname>", methods=["GET", "POST"])
@@ -330,3 +397,32 @@ def get_int(str):
         return 60
     elif str == "diariamente":
         return 1440
+
+
+def load_metrics():
+    #Carregar métricas default e as suas Kpis   
+    parking = Metrics(name='Parkings', 
+    description="""Metric that represents the ocupations of the car parkings in the University of Aveiro.
+    It contains informations about how many spots are occupied, free and the total number of spots of each 
+    parking in the University.""")
+    db.session.add(parking)
+    db.session.commit()
+
+    res = get_querys('parking')
+    for v in res:
+        db.session.add(Kpi(name=v[1], query=v[0], metrica_id=parking.id))
+        db.session.commit()
+
+    
+    #Carregar métricas default e as suas Kpis   
+    wifi = Metrics(name='Wifi Users', 
+    description="""Metric that represents the number of devices connected to the University of Aveiro's
+    endpoints. It contains informations about how many devices are connected to the several access poinst 
+    per depertments from the University.""")
+    db.session.add(wifi)
+    db.session.commit()
+
+    res = get_querys('wifiusr')
+    for v in res:
+        db.session.add(Kpi(name=v[1], query=v[0], metrica_id=wifi.id))
+        db.session.commit()

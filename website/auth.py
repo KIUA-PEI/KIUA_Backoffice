@@ -71,5 +71,3 @@ def signup():
             return redirect(url_for("views.dashboards"))
 
     return render_template("register.html")
-
-

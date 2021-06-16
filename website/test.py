@@ -151,3 +151,10 @@ def delete_id(id):
     print(r.text)
 
     return str(r)
+
+@test.route("/deleteDummyMetric")
+def delete_metric():
+    u = MyKpi.query.filter_by(id == 1).first()
+    db.session.delete(u)
+    db.session.commit()
+    return "all gude now"

@@ -10,108 +10,60 @@
       <div class="column">
         <h2>Choose your metrics</h2>
         <br>
-
         <!--FORM - Coluna do lado Esquerdo-->
         <form method="POST">
-          <button type="button" class="accordion">Parkings</button>
+          <!-- metricas default-->
+          {% for metric in defaultmetrics %}
+          <button type="button" class="accordion">{{ metric.name }}</button>
           <div class="panel">
+            {% for kpi in metric.kpis %}
+            <input type="checkbox" id="{{ kpi.name }}{{ loop.index0 }}" name="m1" value="{{ kpi.query }}">
+            <label for="{{ kpi.name }}{{ loop.index0 }}">{{ kpi.name }}</label>
             <br>
-            <input type="checkbox" id="m1" name="m1" value="SELECT Capacidade, Livres FROM parking WHERE Nome = 'Biblioteca' AND $timeFilter">
-            <label for="i1"> Free parkings in the library</label><br>
-            <input type="checkbox" id="m1" name="m1" value="SELECT Capacidade, Ocupado FROM parking WHERE Nome = 'Biblioteca' AND $timeFilter">
-            <label for="i2"> Occupied parkings in the library</label><br>
-            <input type="checkbox" id="m1" name="m1" value=" SELECT Capacidade, Livres FROM parking WHERE Nome = 'ESTGA' AND $timeFilter">
-            <label for="i3"> Free Parkings in ESTGA </label><br>
-            <input type="checkbox" id="m1" name="m1" value="  SELECT Capacidade, Ocupado FROM parking WHERE Nome = 'ESTGA' AND $timeFilter">
-            <label for="i4"> Occupied Parkings in ESTGA </label><br>
-            <input type="checkbox" id="m1" name="m1" value="  SELECT Capacidade, Livres FROM parking WHERE Nome = 'Incubadora' AND $timeFilter">
-            <label for="i5"> Free Parkings in Incubadora </label><br>
-            <input type="checkbox" id="m1" name="m1" value="  SELECT Capacidade, Ocupado FROM parking WHERE Nome = 'Incubadora' AND $timeFilter">
-            <label for="i6"> Occupied Parkings in Incubadora </label><br>
-            <input type="checkbox" id="m1" name="m1" value="  SELECT Capacidade, Livres FROM parking WHERE Nome = 'Subterraneo' AND $timeFilter">
-            <label for="i7"> Free Parkings in Subterraneo </label><br>
-            <input type="checkbox" id="m1" name="m1" value="  SELECT Capacidade, Ocupado FROM parking WHERE Nome = 'Subterraneo' AND $timeFilter">
-            <label for="i8"> Occupied Parkings in Subterraneo </label><br>
-            <input type="checkbox" id="m1" name="m1" value="  SELECT Capacidade, Livres FROM parking WHERE Nome = 'Residencias' AND $timeFilter">
-            <label for="i9"> Free Parkings in Residencias </label><br>
-            <input type="checkbox" id="m1" name="m1" value="  SELECT Capacidade, Ocupado FROM parking WHERE Nome = 'Residencias' AND $timeFilter">
-            <label for="i10"> Free Parkings in Residencias </label><br>
+            {% endfor %}
           </div>
-
-          <button type="button" class="accordion">Wifi Devices</button>
-          <div class="panel">
-            <br>
-            <input type="checkbox" id="m1" name="m1" value="SELECT sum(wifiCount) as TotalUsers FROM wifiusr WHERE $timeFilter GROUP BY time(1h) fill(null)">
-            <label for="w1"> Total devices connected to ua</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersBiblioteca FROM wifiusr WHERE Nome = 'biblioteca' AND $timeFilter">
-            <label for="w2"> Total devices connected to library wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersAAUAV FROM wifiusr WHERE Nome = 'aauav' AND $timeFilter">
-            <label for="w3"> Total devices connected to aauav wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersCICFANO FROM wifiusr WHERE Nome = 'cicfano' AND $timeFilter">
-            <label for="w4"> Total devices connected to cicfano wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDAO FROM wifiusr WHERE Nome = 'dao' AND $timeFilter">
-            <label for="w5"> Total devices connected to dao wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDBIO FROM wifiusr WHERE Nome = 'dbio' AND $timeFilter">
-            <label for="w6"> Total devices connected to dbio wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDSCPT FROM wifiusr WHERE Nome = 'dscpt' AND $timeFilter">
-            <label for="w7"> Total devices connected to dscpt wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDECA FROM wifiusr WHERE Nome = 'deca' AND $timeFilter">
-            <label for="w8"> Total devices connected to deca wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDETI FROM wifiusr WHERE Nome = 'deti' AND $timeFilter">
-            <label for="w9"> Total devices connected to deti wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDMAT FROM wifiusr WHERE Nome = 'dmat' AND $timeFilter">
-            <label for="w10"> Total devices connected to dmat wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDCIVIL FROM wifiusr WHERE Nome = 'decivil' AND $timeFilter">
-            <label for="w11"> Total devices connected to dcivil wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDEGEIT FROM wifiusr WHERE Nome = 'degeit' AND $timeFilter">
-            <label for="w12"> Total devices connected to dgeit wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDEP FROM wifiusr WHERE Nome = 'dep' AND $timeFilter">
-            <label for="w13"> Total devices connected to dep wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersDFIS FROM wifiusr WHERE Nome = 'fis' AND $timeFilter">
-            <label for="w14"> Total devices connected to dfis wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersIT FROM wifiusr WHERE Nome = 'it' AND $timeFilter">
-            <label for="w15"> Total devices connected to it wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersIETTA FROM wifiusr WHERE Nome = 'ietta' AND $timeFilter">
-            <label for="w16"> Total devices connected to ietta wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersISCA FROM wifiusr WHERE Nome = 'isca' AND $timeFilter">
-            <label for="w17"> Total devices connected to isca wifi</label><br>
-            <input type="checkbox" id="m1" name="m1" value= "SELECT wifiCount as UsersGEO FROM wifiusr WHERE Nome = 'geo' AND $timeFilter">
-            <label for="w18"> Total devices connected to dgeo wifi</label><br>
-          </div>
+          {% endfor %}
           <br><br>
-
+          <!-- metricas do utilizador -->
+          {% for metric in current_user.metrics %}
+          <button type="button" class="accordion">{{ metric.name }}</button>
+          <div class="panel">
+            {% for kpi in metric.kpi%}
+            <input type="checkbox" id="{{kpi.name}}{{ loop.index0 }}" name="m1" value="{{ kpi.query }}">
+            <label for="{{kpi.name}}{{ loop.index0 }}">{{ kpi.name }}</label>
+            <br>
+            {% endfor %}
+          </div>
+          {% endfor %}
+          <br><br>
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dashModal" style="float: right;">Add+</button>
-          
           <!--Modal para fazer submit das preferências para criar uma dashboard-->
           <div class="modal fade" id="dashModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
-
                 <div class="modal-header">
                   <h5 class="modal-title" id="exampleModalLabel">Name your panel</h5>
                   <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                   </button>
                 </div>
-
                 <div class="modal-body">
                   <input type="text" id="panelname" name="panelname" placeholder="Panel name..">
                   <br><br>
                   <h5>Choose your panel type:</h5>
-                  <input type="checkbox" name="check" value="graph" onclick="onlyOne(this)">
-                  <label for="vehicle1"> Graph</label><br>
-                  <input type="checkbox" name="check" value="heatmap" onclick="onlyOne(this)">
-                  <label for="vehicle2"> HeatMap</label><br>
-                  <input type="checkbox" name="check" value="piechart" onclick="onlyOne(this)">
-                  <label for="vehicle3"> PieChart</label><br>
-                  <input type="checkbox" name="check" value="gauge" onclick="onlyOne(this)">
-                  <label for="vehicle3"> Gauge</label><br>
-                  <input type="checkbox" name="check" value="bargauge" onclick="onlyOne(this)">
-                  <label for="vehicle3"> BarGauge</label><br>
-                  <input type="checkbox" name="check" value="stat" onclick="onlyOne(this)">
-                  <label for="vehicle3"> Stat</label>
+                  <input type="checkbox" id="v1" name="check" value="graph" onclick="onlyOne(this)">
+                  <label for="v1"> Graph</label><br>
+                  <input type="checkbox" id="v2" name="check" value="heatmap" onclick="onlyOne(this)">
+                  <label for="v2"> HeatMap</label><br>
+                  <input type="checkbox" id="v3" name="check" value="piechart" onclick="onlyOne(this)">
+                  <label for="v3"> PieChart</label><br>
+                  <input type="checkbox" id="v4" name="check" value="gauge" onclick="onlyOne(this)">
+                  <label for="v4"> Gauge</label><br>
+                  <input type="checkbox" id="v5" name="check" value="bargauge" onclick="onlyOne(this)">
+                  <label for="v5"> BarGauge</label><br>
+                  <input type="checkbox" id="v6" name="check" value="stat" onclick="onlyOne(this)">
+                  <label for="v6"> Stat</label>
                 </div>
-
                 <div class="modal-footer">
                   <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                   <button class="btn btn-primary" type="submit" name="create" value="CreatePanel">Create</button>
@@ -121,7 +73,6 @@
           </div>
         </form>
       </div>
-
       <!--FORM - Coluna Lado direito-->
       <div class="column">
         <h2>Your Dashboard</h2>
@@ -141,7 +92,6 @@
                 </form>
                 {% endfor %}
             {% endif %}
-            
           </div>
         </div>
 
@@ -153,9 +103,6 @@
 
         </div>
     </div>
-
-
-
     <br>
   </div>
   <script>

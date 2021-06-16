@@ -2,11 +2,11 @@
 
 {% block content %}
 
-<div class="container">
-    <br>
-    
-    <div class="content">
-      <!--<div class="container">
+<div class="container-fluid">
+  <br>
+
+  <div class="content">
+    <!--<div class="container">
         <div class="row">
           <div class="col-sm-12 justify-content-left" style="text-align: left;">
             <h2>Your Dashboard - {{dname}}</h2><br>
@@ -20,36 +20,36 @@
       </div>-->
     <br>
     {% for link in urls %}
-      <iframe src="{{ link }}" width="500" height="240" frameborder="0"></iframe>
+    <iframe src="{{ link }}" width="750px" height="320px" frameborder="0"></iframe>
     {% endfor %}
     <br><br><br><br>
-</div>
-
-          <!-- Dashboard Modal-->
-          <div class="modal fade" id="dashModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                  <form method="POST">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Help</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    
-                    <div class="modal-body">
-                      In order to zoom out on a dashboard click with your mouse on
-                      top of it and the press Ctrl-z.<br><br>
-                      In order to zoom in select with your mouse the area on the dashboard
-                      you wish to zoom.
-                    </div>
-                    
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                    </div>
-                  </form>
-                </div>
-            </div>
+  </div>
+  <!-- Dashboard Modal-->
+  <div class="modal fade" id="dashModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <form method="POST">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Help</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
           </div>
 
-{% endblock %}
+          <div class="modal-body">
+            In order to zoom out on a dashboard click with your mouse on
+            top of it and the press Ctrl-z.<br><br>
+            In order to zoom in select with your mouse the area on the dashboard
+            you wish to zoom.
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {% endblock %}

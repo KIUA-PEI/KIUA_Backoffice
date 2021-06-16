@@ -5,6 +5,7 @@ from website.Dashboard import *
 from website.models import Dashboard as Dash, Basic, Key, Http, Metrics, Token
 from website.models import User
 from . import db
+from influxdb_client import InfluxDBClient
 
 views = Blueprint("views", __name__)
 
@@ -276,21 +277,24 @@ def showdashboard(userid, dname):
     
     theme = "Light"
     if request.method == "GET":
-        theme = request.args.get('theme', '')
+        theme = request.args.get('theme')
     
     #Obter a dashboard da base de dados
     dash = Dash.query.filter_by(user_id = userid, nome = dname).first()
     urls = []
     #Obter todos os painéis
     for i in range(1, dash.panels+1):
-        if theme == "Light":
-            urls.append("http://40.68.96.164:3000/d-solo/"+dash.uid+"/"+dash.nome+"?panelId="+str(i)+"&theme=light")
-        else:
+        if theme == "Dark":
             urls.append("http://40.68.96.164:3000/d-solo/"+dash.uid+"/"+dash.nome+"?panelId="+str(i)+"&theme=dark")
+        else:
+            urls.append("http://40.68.96.164:3000/d-solo/"+dash.uid+"/"+dash.nome+"?panelId="+str(i)+"&theme=light")
+    
     if theme == "Light":
         return render_template("showdashboards.html",dname=dname, urls=urls, theme="Dark")
-    else:
+    if theme == "Dark":
         return render_template("showdashboards.html",dname=dname, urls=urls, theme="Light")
+
+    return render_template("showdashboards.html",dname=dname, urls=urls, theme="Dark")
 
 
 

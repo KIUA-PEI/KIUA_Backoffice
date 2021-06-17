@@ -20,6 +20,7 @@ class User(db.Model, UserMixin):
     dashboards = db.relationship("Dashboard", backref='user', lazy=True)                # dashboards do utilizador
     metrics = db.relationship("MyMetricas", backref='user', lazy=True)                  # metricas do utilizador
     folder_id = db.Column(db.Integer, unique=True)
+    admin = db.Column(db.Integer) #0->User, 1->Admin
 
     def __repr__(self):
         return "id: " + str(self.id) + ", email: " + self.email + ", " + self.fname + " " + self.lname

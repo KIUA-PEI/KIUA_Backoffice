@@ -47,8 +47,8 @@ def get_querys(tname):
             for value in tag[1]:
                 result.append(("SELECT "+field+" AS "+"".join(str(value).split())+str(field)+" FROM "+tname+" WHERE "+tag[0]+" = '"+value+"';", field+" from "+value))
 
-    #for r in result:
-        #print(r)
+    for r in result:
+        print(r)
     #Close client 
     client.close()
     return result
@@ -56,4 +56,5 @@ def get_querys(tname):
 #print("\n\n\n")
 #print(get_querys('parking'))
 #print("\n--------\n")
-#get_querys('wifiusr')
+#print(get_querys('wifiusr'))
+

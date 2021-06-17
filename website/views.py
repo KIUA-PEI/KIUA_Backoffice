@@ -66,10 +66,7 @@ def dashboards():
 @views.route("/createdashboard/<dname>", methods=["GET", "POST"])
 @login_required
 def createdashboard(dname):
-    defaultmetrics = Metrics.query.all()
-    for m in defaultmetrics:
-        print(m.kpis)
-    
+    defaultmetrics = Metrics.query.all()    
 
     #Obter dados necessários para construir os vários painéis da dashboard
     if request.method == "POST":
@@ -369,13 +366,167 @@ def showdashboard(userid, dname):
 @views.route("/metrics")
 @login_required
 def metrics():
-    return render_template("metrics.html")
+    defaultmetrics = Metrics.query.all()
+    return render_template("metrics.html", defaultmetrics=defaultmetrics)
 
 #Help Page
 @views.route("/help")
 @login_required
 def help():
     return render_template("help.html")
+
+
+#Default Metrics (For admins only)
+@views.route("/defaultmetric", methods=["GET", "POST"])
+@login_required
+def default_metrics():
+    if request.method == "POST":
+        name = request.form.get("metric-name")
+        period = request.form.get("dropdown-period")
+        endpoint = request.form.get("endpoint")
+        api_type = request.form.get("dropdown-api-type")
+        fields = request.form.get("fields")
+        description = request.form.get("description")
+        #Nome inválido
+        if name == "":
+            flash('ERROR: Invalid Metric name', category='error')
+            return render_template("defaultmetrics.html")
+        #Caso já exista uma métrica com um nome igual
+        elif MyMetricas.query.filter_by(user_id = current_user.id, name = name).first() != None:
+            flash('ERROR: Metric name already exists, choose a new one', category='error')
+            return render_template("defaultmetrics.html")
+        #Caso não seja especificado endpoint
+        elif endpoint == "":
+            flash('ERROR: Source endpoint not specified', category='error')
+            return render_template("defaultmetrics.html")
+        #Caso não seja especificada descrição
+        elif description == "":
+            flash('ERROR: A default metric must have a description', category='error')
+            return render_template("defaultmetrics.html")
+
+
+        #Basic
+        if api_type == "public":
+            basic = Basic(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id)
+            db.session.add(basic)
+            db.session.commit()
+            
+            print("pronto a enviar...")
+            print("id " + str(basic.id))
+            print("basic.url " + basic.url)
+            print("basic.period " + str(get_int(basic.period)))
+            print("args "+ basic.args)
+
+            #Enviar pedido para a API
+            r = requests.get(daemons_api+'/Daemon/Add/Basic',
+                {"id":basic.id,
+                "url": basic.url,
+                "period":get_int(basic.period),
+                "args": basic.args,},
+                headers={'Authorization': daemons_api_key})
+            print("response status: "+str(r.status_code))
+            
+            #Caso a response da API dê erro 
+            if r.status_code != 200 and r.status_code != 201:
+                flash('ERROR: Creating metric, Response Code:'+str(r.status_code)+" Response: "+str(r.text), category='error')
+                db.session.delete(basic)
+                db.session.commit()
+                return render_template("mymetrics.html")
+            
+            #Gerar querys automaticamente
+            querys = get_querys(str(basic.id))
+            print(querys)
+
+            flash('SUCESS: Metric added sucessfully', category='success')
+            print("response text: "+str(r.text))
+
+        # Key
+        elif api_type == "key-based-authentication":
+            key = request.form.get("key-key")
+            
+            keyapi = Key(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), key=key, user_id=current_user.id)
+            db.session.add(keyapi)
+            db.session.commit()
+
+            r = requests.get(daemons_api+'/Daemon/Add/Key',
+                {"id":keyapi.id,
+                "url": keyapi.url,
+                "key": keyapi.key,
+                "args": keyapi.args,
+                "period":get_int(keyapi.period)},
+                headers={'Authorization': daemons_api_key})
+            # print(r.status_code)
+
+        # Token
+        elif api_type == "bearer-token-based-authentication":
+            token_url = request.form.get("token-url")
+            token_ckey = request.form.get("token-ckey")
+            token_csecret = request.form.get("token-csecret")
+            
+            tokenapi = Token(url=endpoint, name=name, args=fields, token_url=token_url, period=period, periodstr=get_period(period), key=token_ckey, secret=token_csecret, user_id=current_user.id)
+            db.session.add(tokenapi)
+            db.session.commit()
+
+            r = requests.get(daemons_api+'/Daemon/Add/Token',
+                {"id":tokenapi.id,
+                "url": tokenapi.url,
+                "token_url": tokenapi.token_url,
+                "secret": tokenapi.secret,
+                "key": tokenapi.key,
+                "period":get_int(tokenapi.period),
+                "args": tokenapi.args},
+                headers={'Authorization':daemons_api_key})
+            # print(r.status_code)
+
+        # Http  
+        elif api_type == "http-authentication":
+            user = request.form.get("http-email")
+            passx = request.form.get("http-pass")
+
+            httpapi = Http(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), username=user, key=passx, user_id=current_user.id)
+            db.session.add(httpapi)
+            db.session.commit()
+
+            r = requests.get(daemons_api+'/Daemon/Add/Http',
+                {"id":httpapi.id,
+                "url": httpapi.url,
+                "username": httpapi.username,
+                "key": httpapi.key,
+                "period": get_int(httpapi.period),
+                "args": httpapi.args},
+                headers={'Authorization':daemons_api_key})
+    
+        
+    elif request.method == "GET":
+        #Apagar uma métrica
+        if request.args.get('deleteBTN', '') != "": 
+            #Obter a métrica
+            basic = Basic.query.filter_by(user_id = current_user.id, id = request.args.get('deleteBTN', '')).first()
+            print(basic.id)
+            #Eliminar a métrica da API
+            r = requests.get(daemons_api+'/Daemon/Remove/Basic',
+                {"id":basic.id},
+                headers={'Authorization': daemons_api_key})
+            print(r.status_code)
+            print(r.text)
+
+            #Eliminar a métrica da base de dados influxDB
+            client = InfluxDBClient(host='40.68.96.164', port=8086, username="peikpis", password="peikpis_2021")
+
+            client.switch_database('Metrics')
+            print(client.query("show measurements"))
+            print(client.query("drop measurement \"" + str(basic.id)+"\""))
+            print(client.query("show measurements"))
+            client.close()
+
+            #Eliminar a métrica da base de dados backoffice
+            db.session.delete(basic)
+            db.session.commit()
+
+            flash('SUCESS: Metric deleted sucessfully', category='success')
+            
+
+        return render_template("defaultmetrics.html")
 
 
 def get_period(str):

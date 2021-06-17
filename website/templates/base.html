@@ -44,20 +44,28 @@
             <li class="nav-item active">
                 <a class="nav-link" href="/mymetrics">
                     <i class="far fa-gem"></i>
-                    <span>My Metricas</span></a>
+                    <span>My Metrics</span></a>
             </li>
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
                 <a class="nav-link" href="/metrics">
                     <i class="fas fa-chart-line"></i>
-                    <span>Métricas</span></a>
+                    <span>Metrics</span></a>
             </li>
             <!-- Nav Item - Dashboard -- mudar href para página de ajuda -->
             <li class="nav-item active">
                 <a class="nav-link" href="/help">
                     <i class="far fa-question-circle"></i>
-                    <span>Ajuda <small> (FAQ)</small> </span></a>
+                    <span>Help <small> (FAQ)</small> </span></a>
             </li>
+
+            {% if current_user.admin == 1 %}
+            <li class="nav-item active">
+                <a class="nav-link" href="/defaultmetric">
+                    <i class="fas fa-screwdriver"></i>
+                    <span>Default Metrics </span></a>
+            </li>
+            {% endif %}
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
             <!-- Sidebar Toggler (Sidebar) -->

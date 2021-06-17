@@ -59,7 +59,10 @@ def signup():
         elif len(password) < 7:
             flash('Password must be at least 7 characters.', category='error')
         else:
-            new_user = User(email=email, password=generate_password_hash(password, method="sha256") , fname=fname, lname=lname)
+            if email == "admin@ua.pt":
+                new_user = User(email=email, password=generate_password_hash(password, method="sha256") , fname=fname, lname=lname, admin=1)
+            else:
+                new_user = User(email=email, password=generate_password_hash(password, method="sha256") , fname=fname, lname=lname, admin=0)
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=False)

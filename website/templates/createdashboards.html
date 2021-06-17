@@ -13,6 +13,7 @@
         <!--FORM - Coluna do lado Esquerdo-->
         <form method="POST">
           <!-- metricas default-->
+          <h5>Default Metrics</h5><br>
           {% for metric in defaultmetrics %}
           <button type="button" class="accordion">{{ metric.name }}</button>
           <div class="panel">
@@ -26,6 +27,7 @@
           {% endfor %}
           <br><br>
           <!-- metricas do utilizador -->
+          <h5>Your Metrics</h5><br>
           {% for metric in current_user.metrics %}
           <button type="button" class="accordion">{{ metric.name }}</button>
           <div class="panel">

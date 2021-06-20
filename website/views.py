@@ -2,7 +2,7 @@ from flask import Blueprint, request, flash, redirect, url_for, session
 from flask.templating import render_template
 from flask_login import login_required, current_user
 from website.Dashboard import *
-from website.models import Dashboard as Dash, MyMetricas, MyKpi, Metrics, Kpi
+from website.models import Dashboard as Dash, MyMetrics, MyKpi, DefaultMetrics, Kpi
 from website.models import User
 from . import db
 from influxdb import InfluxDBClient
@@ -15,7 +15,7 @@ views = Blueprint("views", __name__)
 @login_required
 def dashboards():
     #Se métricas default não estão no site ainda carregá-las
-    if Metrics.query.filter(Metrics.id == 1).first() == None:
+    if DefaultMetrics.query.filter(DefaultMetrics.id == 1).first() == None:
         load_metrics()
     other_users = (User.query.filter(User.id!=current_user.id).all())
 
@@ -66,7 +66,7 @@ def dashboards():
 @views.route("/createdashboard/<dname>", methods=["GET", "POST"])
 @login_required
 def createdashboard(dname):
-    defaultmetrics = Metrics.query.all()    
+    defaultmetrics = DefaultMetrics.query.all()    
 
     #Obter dados necessários para construir os vários painéis da dashboard
     if request.method == "POST":
@@ -198,7 +198,7 @@ def mymetrics():
             flash('ERROR: Invalid Metric name', category='error')
             return render_template("mymetrics.html")
         #Caso já exista uma métrica com um nome igual
-        elif MyMetricas.query.filter_by(user_id = current_user.id, name = name).first() != None:
+        elif MyMetrics.query.filter_by(user_id = current_user.id, name = name).first() != None:
             flash('ERROR: Metric name already exists, choose a new one', category='error')
             return render_template("mymetrics.html")
         #Caso não seja especificado endpoint
@@ -209,7 +209,7 @@ def mymetrics():
 
         #Basic
         if api_type == "public":
-            metric = MyMetricas(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="basic")
+            metric = MyMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="basic")
             db.session.add(metric)
             db.session.commit()
             
@@ -247,7 +247,7 @@ def mymetrics():
         elif api_type == "key-based-authentication":
             key = request.form.get("key-key")
         
-            keymetric = MyMetricas(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="key")
+            keymetric = MyMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="key")
             db.session.add(keymetric)
             db.session.commit()
 
@@ -279,7 +279,7 @@ def mymetrics():
             token_ckey = request.form.get("token-ckey")
             token_csecret = request.form.get("token-csecret")
             
-            tokenmetric = MyMetricas(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="token")
+            tokenmetric = MyMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="token")
             db.session.add(tokenmetric)
             db.session.commit()
 
@@ -312,7 +312,7 @@ def mymetrics():
             user = request.form.get("http-email")
             passx = request.form.get("http-pass")
 
-            httpmetric = MyMetricas(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id)
+            httpmetric = MyMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id)
             db.session.add(httpmetric)
             db.session.commit()
 
@@ -346,7 +346,7 @@ def mymetrics():
         #Apagar uma métrica
         if request.args.get('deleteBTN', '') != "": 
             #Obter a métrica
-            metric = MyMetricas.query.filter_by(user_id = current_user.id, id = request.args.get('deleteBTN', '')).first()
+            metric = MyMetrics.query.filter_by(user_id = current_user.id, id = request.args.get('deleteBTN', '')).first()
             print(metric.id)
             #Eliminar a métrica da API
             r = requests.get(daemons_api+'/Daemon/Remove/Basic',
@@ -409,7 +409,7 @@ def showdashboard(userid, dname):
 @views.route("/metrics")
 @login_required
 def metrics():
-    defaultmetrics = Metrics.query.all()
+    defaultmetrics = DefaultMetrics.query.all()
     return render_template("metrics.html", defaultmetrics=defaultmetrics)
 
 #Help Page
@@ -436,7 +436,7 @@ def default_metrics():
             flash('ERROR: Invalid Metric name', category='error')
             return render_template("defaultmetrics.html")
         #Caso já exista uma métrica com um nome igual
-        elif Metrics.query.filter_by(user_id = current_user.id, name = name).first() != None:
+        elif DefaultMetrics.query.filter_by(user_id = current_user.id, name = name).first() != None:
             flash('ERROR: Metric name already exists, choose a new one', category='error')
             return render_template("defaultmetrics.html")
         #Caso não seja especificado endpoint
@@ -451,7 +451,7 @@ def default_metrics():
 
         #Basic
         if api_type == "public":
-            metric = Metrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="basic", description=description)
+            metric = DefaultMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="basic", description=description)
             db.session.add(metric)
             db.session.commit()
             
@@ -490,7 +490,7 @@ def default_metrics():
         elif api_type == "key-based-authentication":
             key = request.form.get("key-key")
         
-            keymetric = Metrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="key", description=description)
+            keymetric = DefaultMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="key", description=description)
             db.session.add(keymetric)
             db.session.commit()
 
@@ -522,7 +522,7 @@ def default_metrics():
             token_ckey = request.form.get("token-ckey")
             token_csecret = request.form.get("token-csecret")
             
-            tokenmetric = Metrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="token", description=description)
+            tokenmetric = DefaultMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="token", description=description)
             db.session.add(tokenmetric)
             db.session.commit()
 
@@ -555,7 +555,7 @@ def default_metrics():
             user = request.form.get("http-email")
             passx = request.form.get("http-pass")
 
-            httpmetric = Metrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, description=description)
+            httpmetric = DefaultMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, description=description)
             db.session.add(httpmetric)
             db.session.commit()
 
@@ -589,7 +589,7 @@ def default_metrics():
         #Apagar uma métrica
         if request.args.get('deleteBTN', '') != "": 
             #Obter a métrica
-            metric = Metrics.query.filter_by(user_id = current_user.id, id = request.args.get('deleteBTN', '')).first()
+            metric = DefaultMetrics.query.filter_by(user_id = current_user.id, id = request.args.get('deleteBTN', '')).first()
             print(metric.id)
             #Eliminar a métrica da API
             r = requests.get(daemons_api+'/Daemon/Remove/Basic',
@@ -640,7 +640,7 @@ def get_int(str):
 
 def load_metrics():
     #Carregar métricas default e as suas Kpis   
-    parking = Metrics(name='Parkings', 
+    parking = DefaultMetrics(name='Parkings', 
     description="""Metric that represents the ocupations of the car parkings in the University of Aveiro.
     It contains informations about how many spots are occupied, free and the total number of spots of each 
     parking in the University.""",
@@ -657,7 +657,7 @@ def load_metrics():
 
     
     #Carregar métricas default e as suas Kpis   
-    wifi = Metrics(name='Wifi Users', 
+    wifi = DefaultMetrics(name='Wifi Users', 
     description="""Metric that represents the number of devices connected to the University of Aveiro's
     endpoints. It contains informations about how many devices are connected to the several access poinst 
     per depertments from the University.""",

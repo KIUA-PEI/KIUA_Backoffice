@@ -21,6 +21,7 @@ class User(db.Model, UserMixin):
     metrics = db.relationship("MyMetricas", backref='user', lazy=True)                  # metricas do utilizador
     folder_id = db.Column(db.Integer, unique=True)
     admin = db.Column(db.Integer) #0->User, 1->Admin
+    defaultmetrics = db.relationship("Metrics", backref="user", lazy=True)
 
     def __repr__(self):
         return "id: " + str(self.id) + ", email: " + self.email + ", " + self.fname + " " + self.lname
@@ -60,58 +61,6 @@ class MyMetricas(db.Model, Base):
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
-    __mapper_args__ = {
-        'polymorphic_identity':'mymetricas',
-        'polymorphic_on': type
-    }
-
-    def __repr__(self):
-        return f"MyMetric(name = {self.name})"
-
-class Basic(MyMetricas):
-    __tablename__ = 'basic'
-
-    id = db.Column(db.Integer, db.ForeignKey('mymetricas.id'), primary_key=True)
-
-    __mapper_args__ = {
-        'polymorphic_identity':'basic',
-    }
-      
-class Key(MyMetricas):
-    __tablename__ = 'key'
-
-    id = db.Column(db.Integer, db.ForeignKey('mymetricas.id'), primary_key=True)
-    key = db.Column(db.String(300))
-
-    __mapper_args__ = {
-        'polymorphic_identity':'key',
-    }
-
-class Http(MyMetricas):
-    __tablename__ = 'http'
-
-    id = db.Column(db.Integer, db.ForeignKey('mymetricas.id'), primary_key=True)
-
-    key = db.Column(db.String(300))
-    username = db.Column(db.String(300))
-
-    __mapper_args__ = {
-        'polymorphic_identity':'http',
-    }
-    
-class Token(MyMetricas):
-    __tablename__ = 'token'
-
-    id = db.Column(db.Integer, db.ForeignKey('mymetricas.id'), primary_key=True)
-
-    token_url = db.Column(db.String(500),nullable=False)
-    key = db.Column(db.String(300))
-    secret = db.Column(db.String(300))
-
-    __mapper_args__ = {
-        'polymorphic_identity':'token',
-    }
-
 # indicadores gerados para as métricas introduzidas pelo utilizador
 # tem nome e query gerado automaticamente
 class MyKpi(db.Model):
@@ -135,7 +84,15 @@ class Metrics(db.Model):
     name = db.Column(db.String(50))
     description = db.Column(db.String(3000), nullable=True)
     kpis = db.relationship("Kpi", backref="metrics", lazy=True)
+    url = db.Column(db.String(500),nullable=False)
+    date = db.Column(db.DateTime(timezone=True), default=func.now())                    # data de criação
+    args = db.Column(db.String(750),nullable=True)
+    period = db.Column(db.Integer(), nullable=False)
+    periodstr = db.Column(db.String(30), nullable=True)
+    status = db.Column(db.Boolean(),default=True)
+    type = db.Column(db.String(50))
 
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
 class Kpi(db.Model):
     __tablename__ = 'kpi'
 

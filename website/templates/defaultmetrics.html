@@ -155,23 +155,23 @@
                 </tr>
               </thead>
               <tbody>
-                {% for api in current_user.metrics %}
+                {% for m in current_user.defaultmetrics %}
                   <tr>
                     <td class="align-middle">
-                      {{ api.name }}
+                      {{ m.name }}
                     </td>
                     <td class="align-middle">
-                      {{ api.date }}
+                      {{ m.date }}
                     </td>
                     <td class="align-middle">
-                      {{ api.periodstr }}
+                      {{ m.periodstr }}
                     </td>
                     <td class="align-middle">
-                      <a href="/mymetrics">{{ api.url }}</a>
+                      <a href="/mymetrics">{{ m.url }}</a>
                     </td>
                     <form>
                       <td class="align-middle">
-                        <button type="submit" class="btn fas fa-trash-alt" id="deleteBTN" name="deleteBTN" value="{{ api.id }}"></button>
+                        <button type="submit" class="btn fas fa-trash-alt" id="deleteBTN" name="deleteBTN" value="{{ m.id }}"></button>
                       </td>
                     </form>
                   </tr>

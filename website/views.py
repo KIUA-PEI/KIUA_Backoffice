@@ -2,7 +2,7 @@ from flask import Blueprint, request, flash, redirect, url_for, session
 from flask.templating import render_template
 from flask_login import login_required, current_user
 from website.Dashboard import *
-from website.models import Dashboard as Dash, Basic, Key, Http, Metrics, Token, MyMetricas, Metrics, Kpi
+from website.models import Dashboard as Dash, MyMetricas, MyKpi, Metrics, Kpi
 from website.models import User
 from . import db
 from influxdb import InfluxDBClient
@@ -209,55 +209,69 @@ def mymetrics():
 
         #Basic
         if api_type == "public":
-            basic = Basic(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id)
-            db.session.add(basic)
+            metric = MyMetricas(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="basic")
+            db.session.add(metric)
             db.session.commit()
             
             print("pronto a enviar...")
-            print("id " + str(basic.id))
-            print("basic.url " + basic.url)
-            print("basic.period " + str(get_int(basic.period)))
-            print("args "+ basic.args)
+            print("id " + str(metric.id))
+            print("basic.url " + metric.url)
+            print("basic.period " + str(get_int(metric.period)))
+            print("args "+ metric.args)
 
             #Enviar pedido para a API
             r = requests.get(daemons_api+'/Daemon/Add/Basic',
-                {"id":basic.id,
-                "url": basic.url,
-                "period":get_int(basic.period),
-                "args": basic.args,},
+                {"id":metric.id,
+                "url": metric.url,
+                "period":get_int(metric.period),
+                "args": metric.args,},
                 headers={'Authorization': daemons_api_key})
             print("response status: "+str(r.status_code))
             
             #Caso a response da API dê erro 
             if r.status_code != 200 and r.status_code != 201:
                 flash('ERROR: Creating metric, Response Code:'+str(r.status_code)+" Response: "+str(r.text), category='error')
-                db.session.delete(basic)
+                db.session.delete(metric)
                 db.session.commit()
                 return render_template("mymetrics.html")
             
             #Gerar querys automaticamente
-            querys = get_querys(str(basic.id))
+            querys = get_querys(str(metric.id))
             print(querys)
 
             flash('SUCESS: Metric added sucessfully', category='success')
             print("response text: "+str(r.text))
 
+
         # Key
         elif api_type == "key-based-authentication":
             key = request.form.get("key-key")
-            
-            keyapi = Key(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), key=key, user_id=current_user.id)
-            db.session.add(keyapi)
+        
+            keymetric = MyMetricas(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="key")
+            db.session.add(keymetric)
             db.session.commit()
 
             r = requests.get(daemons_api+'/Daemon/Add/Key',
-                {"id":keyapi.id,
-                "url": keyapi.url,
-                "key": keyapi.key,
-                "args": keyapi.args,
-                "period":get_int(keyapi.period)},
+                {"id":keymetric.id,
+                "url": keymetric.url,
+                "key": key,
+                "args": keymetric.args,
+                "period":get_int(keymetric.period)},
                 headers={'Authorization': daemons_api_key})
-            # print(r.status_code)
+            print("response status: "+str(r.status_code))
+
+            #Caso a response da API dê erro 
+            if r.status_code != 200 and r.status_code != 201:
+                flash('ERROR: Creating metric, Response Code:'+str(r.status_code)+" Response: "+str(r.text), category='error')
+                db.session.delete(keymetric)
+                db.session.commit()
+                return render_template("mymetrics.html")
+            #Gerar querys automaticamente
+            querys = get_querys(str(keymetric.id))
+            print(querys)
+
+            flash('SUCESS: Metric added sucessfully', category='success')
+            print("response text: "+str(r.text))
 
         # Token
         elif api_type == "bearer-token-based-authentication":
@@ -265,49 +279,78 @@ def mymetrics():
             token_ckey = request.form.get("token-ckey")
             token_csecret = request.form.get("token-csecret")
             
-            tokenapi = Token(url=endpoint, name=name, args=fields, token_url=token_url, period=period, periodstr=get_period(period), key=token_ckey, secret=token_csecret, user_id=current_user.id)
-            db.session.add(tokenapi)
+            tokenmetric = MyMetricas(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="token")
+            db.session.add(tokenmetric)
             db.session.commit()
 
             r = requests.get(daemons_api+'/Daemon/Add/Token',
-                {"id":tokenapi.id,
-                "url": tokenapi.url,
-                "token_url": tokenapi.token_url,
-                "secret": tokenapi.secret,
-                "key": tokenapi.key,
-                "period":get_int(tokenapi.period),
-                "args": tokenapi.args},
+                {"id":tokemetric.id,
+                "url": tokenmetric.url,
+                "token_url": token_url,
+                "secret": token_csecret,
+                "key": token_ckey,
+                "period":get_int(tokenmetric.period),
+                "args": tokenmetric.args},
                 headers={'Authorization':daemons_api_key})
-            # print(r.status_code)
+            print("response status: "+str(r.status_code))
+
+            #Caso a response da API dê erro 
+            if r.status_code != 200 and r.status_code != 201:
+                flash('ERROR: Creating metric, Response Code:'+str(r.status_code)+" Response: "+str(r.text), category='error')
+                db.session.delete(tokenmetric)
+                db.session.commit()
+                return render_template("mymetrics.html")
+            #Gerar querys automaticamente
+            querys = get_querys(str(tokenmetric.id))
+            print(querys)
+
+            flash('SUCESS: Metric added sucessfully', category='success')
+            print("response text: "+str(r.text))
 
         # Http  
         elif api_type == "http-authentication":
             user = request.form.get("http-email")
             passx = request.form.get("http-pass")
 
-            httpapi = Http(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), username=user, key=passx, user_id=current_user.id)
-            db.session.add(httpapi)
+            httpmetric = MyMetricas(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id)
+            db.session.add(httpmetric)
             db.session.commit()
 
             r = requests.get(daemons_api+'/Daemon/Add/Http',
-                {"id":httpapi.id,
-                "url": httpapi.url,
-                "username": httpapi.username,
-                "key": httpapi.key,
-                "period": get_int(httpapi.period),
-                "args": httpapi.args},
+                {"id":httpmetric.id,
+                "url": httpmetric.url,
+                "username": user,
+                "key": passx,
+                "period": get_int(httpmetric.period),
+                "args": httpmetric.args},
                 headers={'Authorization':daemons_api_key})
+            print("response status: "+str(r.status_code))
+
+            #Caso a response da API dê erro 
+            if r.status_code != 200 and r.status_code != 201:
+                flash('ERROR: Creating metric, Response Code:'+str(r.status_code)+" Response: "+str(r.text), category='error')
+                db.session.delete(tokenmetric)
+                db.session.commit()
+                return render_template("mymetrics.html")
+            #Gerar querys automaticamente
+            querys = get_querys(str(tokenmetric.id))
+            print(querys)
+
+            flash('SUCESS: Metric added sucessfully', category='success')
+            print("response text: "+str(r.text))
     
-    
+
+
+
     elif request.method == "GET":
         #Apagar uma métrica
         if request.args.get('deleteBTN', '') != "": 
             #Obter a métrica
-            basic = Basic.query.filter_by(user_id = current_user.id, id = request.args.get('deleteBTN', '')).first()
-            print(basic.id)
+            metric = MyMetricas.query.filter_by(user_id = current_user.id, id = request.args.get('deleteBTN', '')).first()
+            print(metric.id)
             #Eliminar a métrica da API
             r = requests.get(daemons_api+'/Daemon/Remove/Basic',
-                {"id":basic.id},
+                {"id":metric.id},
                 headers={'Authorization': daemons_api_key})
             print(r.status_code)
             print(r.text)
@@ -317,12 +360,12 @@ def mymetrics():
 
             client.switch_database('Metrics')
             print(client.query("show measurements"))
-            print(client.query("drop measurement \"" + str(basic.id)+"\""))
+            print(client.query("drop measurement \"" + str(metric.id)+"\""))
             print(client.query("show measurements"))
             client.close()
 
             #Eliminar a métrica da base de dados backoffice
-            db.session.delete(basic)
+            db.session.delete(metric)
             db.session.commit()
 
             flash('SUCESS: Metric deleted sucessfully', category='success')
@@ -380,6 +423,7 @@ def help():
 @views.route("/defaultmetric", methods=["GET", "POST"])
 @login_required
 def default_metrics():
+
     if request.method == "POST":
         name = request.form.get("metric-name")
         period = request.form.get("dropdown-period")
@@ -392,7 +436,7 @@ def default_metrics():
             flash('ERROR: Invalid Metric name', category='error')
             return render_template("defaultmetrics.html")
         #Caso já exista uma métrica com um nome igual
-        elif MyMetricas.query.filter_by(user_id = current_user.id, name = name).first() != None:
+        elif Metrics.query.filter_by(user_id = current_user.id, name = name).first() != None:
             flash('ERROR: Metric name already exists, choose a new one', category='error')
             return render_template("defaultmetrics.html")
         #Caso não seja especificado endpoint
@@ -407,55 +451,70 @@ def default_metrics():
 
         #Basic
         if api_type == "public":
-            basic = Basic(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id)
-            db.session.add(basic)
+            metric = Metrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="basic", description=description)
+            db.session.add(metric)
             db.session.commit()
             
             print("pronto a enviar...")
-            print("id " + str(basic.id))
-            print("basic.url " + basic.url)
-            print("basic.period " + str(get_int(basic.period)))
-            print("args "+ basic.args)
+            print("id " + str(metric.id))
+            print("basic.url " + metric.url)
+            print("basic.period " + str(get_int(metric.period)))
+            print("args "+ metric.args)
 
             #Enviar pedido para a API
             r = requests.get(daemons_api+'/Daemon/Add/Basic',
-                {"id":basic.id,
-                "url": basic.url,
-                "period":get_int(basic.period),
-                "args": basic.args,},
+                {"id":metric.id,
+                "url": metric.url,
+                "period":get_int(metric.period),
+                "args": metric.args,},
                 headers={'Authorization': daemons_api_key})
             print("response status: "+str(r.status_code))
             
             #Caso a response da API dê erro 
             if r.status_code != 200 and r.status_code != 201:
                 flash('ERROR: Creating metric, Response Code:'+str(r.status_code)+" Response: "+str(r.text), category='error')
-                db.session.delete(basic)
+                db.session.delete(metric)
                 db.session.commit()
-                return render_template("mymetrics.html")
+                return render_template("defaultmetrics.html")
             
             #Gerar querys automaticamente
-            querys = get_querys(str(basic.id))
+            querys = get_querys(str(metric.id))
             print(querys)
 
             flash('SUCESS: Metric added sucessfully', category='success')
             print("response text: "+str(r.text))
+            return render_template("defaultmetrics.html")
+
 
         # Key
         elif api_type == "key-based-authentication":
             key = request.form.get("key-key")
-            
-            keyapi = Key(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), key=key, user_id=current_user.id)
-            db.session.add(keyapi)
+        
+            keymetric = Metrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="key", description=description)
+            db.session.add(keymetric)
             db.session.commit()
 
             r = requests.get(daemons_api+'/Daemon/Add/Key',
-                {"id":keyapi.id,
-                "url": keyapi.url,
-                "key": keyapi.key,
-                "args": keyapi.args,
-                "period":get_int(keyapi.period)},
+                {"id":keymetric.id,
+                "url": keymetric.url,
+                "key": key,
+                "args": keymetric.args,
+                "period":get_int(keymetric.period)},
                 headers={'Authorization': daemons_api_key})
-            # print(r.status_code)
+            print("response status: "+str(r.status_code))
+
+            #Caso a response da API dê erro 
+            if r.status_code != 200 and r.status_code != 201:
+                flash('ERROR: Creating metric, Response Code:'+str(r.status_code)+" Response: "+str(r.text), category='error')
+                db.session.delete(keymetric)
+                db.session.commit()
+                return render_template("defaultmetrics.html")
+            #Gerar querys automaticamente
+            querys = get_querys(str(keymetric.id))
+            print(querys)
+
+            flash('SUCESS: Metric added sucessfully', category='success')
+            print("response text: "+str(r.text))
 
         # Token
         elif api_type == "bearer-token-based-authentication":
@@ -463,49 +522,78 @@ def default_metrics():
             token_ckey = request.form.get("token-ckey")
             token_csecret = request.form.get("token-csecret")
             
-            tokenapi = Token(url=endpoint, name=name, args=fields, token_url=token_url, period=period, periodstr=get_period(period), key=token_ckey, secret=token_csecret, user_id=current_user.id)
-            db.session.add(tokenapi)
+            tokenmetric = Metrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="token", description=description)
+            db.session.add(tokenmetric)
             db.session.commit()
 
             r = requests.get(daemons_api+'/Daemon/Add/Token',
-                {"id":tokenapi.id,
-                "url": tokenapi.url,
-                "token_url": tokenapi.token_url,
-                "secret": tokenapi.secret,
-                "key": tokenapi.key,
-                "period":get_int(tokenapi.period),
-                "args": tokenapi.args},
+                {"id":tokemetric.id,
+                "url": tokenmetric.url,
+                "token_url": token_url,
+                "secret": token_csecret,
+                "key": token_ckey,
+                "period":get_int(tokenmetric.period),
+                "args": tokenmetric.args},
                 headers={'Authorization':daemons_api_key})
-            # print(r.status_code)
+            print("response status: "+str(r.status_code))
+
+            #Caso a response da API dê erro 
+            if r.status_code != 200 and r.status_code != 201:
+                flash('ERROR: Creating metric, Response Code:'+str(r.status_code)+" Response: "+str(r.text), category='error')
+                db.session.delete(tokenmetric)
+                db.session.commit()
+                return render_template("defaultmetrics.html")
+            #Gerar querys automaticamente
+            querys = get_querys(str(tokenmetric.id))
+            print(querys)
+
+            flash('SUCESS: Metric added sucessfully', category='success')
+            print("response text: "+str(r.text))
 
         # Http  
         elif api_type == "http-authentication":
             user = request.form.get("http-email")
             passx = request.form.get("http-pass")
 
-            httpapi = Http(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), username=user, key=passx, user_id=current_user.id)
-            db.session.add(httpapi)
+            httpmetric = Metrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, description=description)
+            db.session.add(httpmetric)
             db.session.commit()
 
             r = requests.get(daemons_api+'/Daemon/Add/Http',
-                {"id":httpapi.id,
-                "url": httpapi.url,
-                "username": httpapi.username,
-                "key": httpapi.key,
-                "period": get_int(httpapi.period),
-                "args": httpapi.args},
+                {"id":httpmetric.id,
+                "url": httpmetric.url,
+                "username": user,
+                "key": passx,
+                "period": get_int(httpmetric.period),
+                "args": httpmetric.args},
                 headers={'Authorization':daemons_api_key})
+            print("response status: "+str(r.status_code))
+
+            #Caso a response da API dê erro 
+            if r.status_code != 200 and r.status_code != 201:
+                flash('ERROR: Creating metric, Response Code:'+str(r.status_code)+" Response: "+str(r.text), category='error')
+                db.session.delete(tokenmetric)
+                db.session.commit()
+                return render_template("defaultmetrics.html")
+            #Gerar querys automaticamente
+            querys = get_querys(str(tokenmetric.id))
+            print(querys)
+
+            flash('SUCESS: Metric added sucessfully', category='success')
+            print("response text: "+str(r.text))            
+
+        return render_template("defaultmetrics.html")
     
-        
+    
     elif request.method == "GET":
         #Apagar uma métrica
         if request.args.get('deleteBTN', '') != "": 
             #Obter a métrica
-            basic = Basic.query.filter_by(user_id = current_user.id, id = request.args.get('deleteBTN', '')).first()
-            print(basic.id)
+            metric = Metrics.query.filter_by(user_id = current_user.id, id = request.args.get('deleteBTN', '')).first()
+            print(metric.id)
             #Eliminar a métrica da API
             r = requests.get(daemons_api+'/Daemon/Remove/Basic',
-                {"id":basic.id},
+                {"id":metric.id},
                 headers={'Authorization': daemons_api_key})
             print(r.status_code)
             print(r.text)
@@ -515,18 +603,18 @@ def default_metrics():
 
             client.switch_database('Metrics')
             print(client.query("show measurements"))
-            print(client.query("drop measurement \"" + str(basic.id)+"\""))
+            print(client.query("drop measurement \"" + str(metric.id)+"\""))
             print(client.query("show measurements"))
             client.close()
 
             #Eliminar a métrica da base de dados backoffice
-            db.session.delete(basic)
+            db.session.delete(metric)
             db.session.commit()
-
             flash('SUCESS: Metric deleted sucessfully', category='success')
-            
 
-        return render_template("defaultmetrics.html")
+            return render_template("defaultmetrics.html")
+    
+    return render_template("defaultmetrics.html")
 
 
 def get_period(str):
@@ -555,7 +643,10 @@ def load_metrics():
     parking = Metrics(name='Parkings', 
     description="""Metric that represents the ocupations of the car parkings in the University of Aveiro.
     It contains informations about how many spots are occupied, free and the total number of spots of each 
-    parking in the University.""")
+    parking in the University.""",
+    url="http://services.web.ua.pt/parques/parques",
+    period=5,
+    type="basic")
     db.session.add(parking)
     db.session.commit()
 
@@ -569,7 +660,10 @@ def load_metrics():
     wifi = Metrics(name='Wifi Users', 
     description="""Metric that represents the number of devices connected to the University of Aveiro's
     endpoints. It contains informations about how many devices are connected to the several access poinst 
-    per depertments from the University.""")
+    per depertments from the University.""",
+    url="https://wso2-gw.ua.pt",
+    period=5,
+    type="basic")
     db.session.add(wifi)
     db.session.commit()
 

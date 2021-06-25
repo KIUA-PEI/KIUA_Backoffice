@@ -18,12 +18,16 @@
           <button type="button" class="accordion">{{ metric.name }}</button>
           <div class="panel">
             <br>
-            {% for kpi in metric.kpi %}
-            <input type="checkbox" id="{{ kpi.name }}{{ loop.index0 }}" name="m1" value="{{ kpi.query }}">
-            <label for="{{ kpi.name }}{{ loop.index0 }}">{{ kpi.name }}</label>
-            <br>
-            {% endfor %}
-          </div>
+            {% if metric.status != False %}
+              {% for kpi in metric.kpi %}
+              <input type="checkbox" id="{{ kpi.name }}{{ loop.index0 }}" name="m1" value="{{ kpi.query }}">
+              <label for="{{ kpi.name }}{{ loop.index0 }}">{{ kpi.name }}</label>
+              <br>
+              {% endfor %}
+            {% else %}
+              <p>Indicatos not available yet, try again later</p>
+            {% endif %}
+            </div>
           {% endfor %}
           <br><br>
           <!-- metricas do utilizador -->
@@ -31,11 +35,17 @@
           {% for metric in current_user.metrics %}
           <button type="button" class="accordion">{{ metric.name }}</button>
           <div class="panel">
-            {% for kpi in metric.mykpi%}
-            <input type="checkbox" id="{{kpi.name}}{{ loop.index0 }}" name="m1" value="{{ kpi.query }}">
-            <label for="{{kpi.name}}{{ loop.index0 }}">{{ kpi.name }}</label>
             <br>
-            {% endfor %}
+            {% if metric.status != False %}
+              {% for kpi in metric.mykpi%}
+              <input type="checkbox" id="{{kpi.name}}{{ loop.index0 }}" name="m1" value="{{ kpi.query }}">
+              <label for="{{kpi.name}}{{ loop.index0 }}">{{ kpi.name }}</label>
+              <br>
+              {% endfor %}
+            {% else %}
+              <p>Indicatos not available yet, try again later</p>
+            {% endif %}
+
           </div>
           {% endfor %}
           <br><br>

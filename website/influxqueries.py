@@ -1,7 +1,9 @@
 from influxdb import InfluxDBClient
+import time
 
 #Given a table name generate all qauerys 
 def get_querys(tname):
+    print("\nGenerating Querys for " + str(tname)+"\n")
     #Store tags
     tags = []
     #Store tags and it's respective values
@@ -16,11 +18,12 @@ def get_querys(tname):
     #Switch to Metrics database
     client.switch_database('Metrics')
 
-    #Obtain tags
     query = client.query("SHOW TAG KEYS FROM \""+tname+"\"")
+    #Obtain tags
     for taglist in query:
         for tag in taglist: 
-            tags.append(tag['tagKey'])
+            if(tag['tagKey'] != 'id'):
+                tags.append(tag['tagKey'])
     #print(tags)
 
     #Obtain tag values
@@ -45,7 +48,7 @@ def get_querys(tname):
     for field in fields:
         for tag in values:
             for value in tag[1]:
-                result.append(("SELECT "+field+" AS "+"".join(str(value).split())+str(field)+" FROM "+tname+" WHERE "+tag[0]+" = '"+value+"';", field+" from "+value))
+                result.append(("SELECT "+field+' AS "'+"".join(str(value).split())+str(field)+'" FROM "'+tname+'" WHERE '+tag[0]+" = '"+value+"';", field+" from "+value))
 
     for r in result:
         print(r)
@@ -57,4 +60,3 @@ def get_querys(tname):
 #print(get_querys('parking'))
 #print("\n--------\n")
 #print(get_querys('wifiusr'))
-

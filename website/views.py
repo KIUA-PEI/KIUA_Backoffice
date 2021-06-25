@@ -67,6 +67,31 @@ def dashboards():
 @login_required
 def createdashboard(dname):
     defaultmetrics = DefaultMetrics.query.all()    
+    mymetrics = MyMetrics.query.all()
+
+    for m in mymetrics:
+        if m.status==False:
+            #Gerar querys automaticamente
+            querys = get_querys(str(m.id))
+            #Adicionar querys àssociados à métrica à base de dados
+            if querys != []:
+                for v in querys:
+                    db.session.add(MyKpi(name=v[1], query=v[0], my_metrica_id=m.id))
+                    db.session.commit()
+                m.status = True
+                db.session.commit()
+    
+    for m in defaultmetrics:
+        if m.status==False:
+            #Gerar querys automaticamente
+            querys = get_querys(str(m.id))
+            #Adicionar querys àssociados à métrica à base de dados
+            if querys != []:
+                for v in querys:
+                    db.session.add(Kpi(name=v[1], query=v[0], metrica_id=m.id))
+                    db.session.commit()
+                m.status = True
+                db.session.commit()
 
     #Obter dados necessários para construir os vários painéis da dashboard
     if request.method == "POST":
@@ -209,7 +234,7 @@ def mymetrics():
 
         #Basic
         if api_type == "public":
-            metric = MyMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="basic")
+            metric = MyMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, status=False, type="basic")
             db.session.add(metric)
             db.session.commit()
             
@@ -235,9 +260,6 @@ def mymetrics():
                 db.session.commit()
                 return render_template("mymetrics.html")
             
-            #Gerar querys automaticamente
-            querys = get_querys(str(metric.id))
-            print(querys)
 
             flash('SUCESS: Metric added sucessfully', category='success')
             print("response text: "+str(r.text))
@@ -247,7 +269,7 @@ def mymetrics():
         elif api_type == "key-based-authentication":
             key = request.form.get("key-key")
         
-            keymetric = MyMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="key")
+            keymetric = MyMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, status=False, type="key")
             db.session.add(keymetric)
             db.session.commit()
 
@@ -279,7 +301,7 @@ def mymetrics():
             token_ckey = request.form.get("token-ckey")
             token_csecret = request.form.get("token-csecret")
             
-            tokenmetric = MyMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="token")
+            tokenmetric = MyMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, status=False, type="token")
             db.session.add(tokenmetric)
             db.session.commit()
 
@@ -312,7 +334,7 @@ def mymetrics():
             user = request.form.get("http-email")
             passx = request.form.get("http-pass")
 
-            httpmetric = MyMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id)
+            httpmetric = MyMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), status=False, user_id=current_user.id)
             db.session.add(httpmetric)
             db.session.commit()
 
@@ -451,7 +473,7 @@ def default_metrics():
 
         #Basic
         if api_type == "public":
-            metric = DefaultMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="basic", description=description)
+            metric = DefaultMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, status=False, type="basic", description=description)
             db.session.add(metric)
             db.session.commit()
             
@@ -490,7 +512,7 @@ def default_metrics():
         elif api_type == "key-based-authentication":
             key = request.form.get("key-key")
         
-            keymetric = DefaultMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="key", description=description)
+            keymetric = DefaultMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, status=False, type="key", description=description)
             db.session.add(keymetric)
             db.session.commit()
 
@@ -509,6 +531,7 @@ def default_metrics():
                 db.session.delete(keymetric)
                 db.session.commit()
                 return render_template("defaultmetrics.html")
+            
             #Gerar querys automaticamente
             querys = get_querys(str(keymetric.id))
             print(querys)
@@ -522,7 +545,7 @@ def default_metrics():
             token_ckey = request.form.get("token-ckey")
             token_csecret = request.form.get("token-csecret")
             
-            tokenmetric = DefaultMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, type="token", description=description)
+            tokenmetric = DefaultMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, status=False, type="token", description=description)
             db.session.add(tokenmetric)
             db.session.commit()
 
@@ -555,7 +578,7 @@ def default_metrics():
             user = request.form.get("http-email")
             passx = request.form.get("http-pass")
 
-            httpmetric = DefaultMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, description=description)
+            httpmetric = DefaultMetrics(url=endpoint, name=name, args=fields, period=period, periodstr=get_period(period), user_id=current_user.id, status=False, description=description)
             db.session.add(httpmetric)
             db.session.commit()
 
@@ -646,6 +669,7 @@ def load_metrics():
     parking in the University.""",
     url="http://services.web.ua.pt/parques/parques",
     period=5,
+    status=True,
     type="basic")
     db.session.add(parking)
     db.session.commit()
@@ -663,6 +687,7 @@ def load_metrics():
     per depertments from the University.""",
     url="https://wso2-gw.ua.pt",
     period=5,
+    status=True,
     type="basic")
     db.session.add(wifi)
     db.session.commit()

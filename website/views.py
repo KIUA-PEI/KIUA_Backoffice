@@ -696,3 +696,38 @@ def load_metrics():
     for v in res:
         db.session.add(Kpi(name=v[1], query=v[0], metrica_id=wifi.id))
         db.session.commit()
+    
+
+    #Carregar métricas default e as suas Kpis   
+    dhcpool = DefaultMetrics(name='DHCP Pool', 
+    description="""Metric that represents the number of addresses assigned from the University of Aveiro's
+    DHCP Pools.""",
+    url="https://wso2-gw.ua.pt",
+    period=5,
+    status=True,
+    type="basic")
+    db.session.add(dhcpool)
+    db.session.commit()
+
+    res = get_querys('dhcp_pool')
+    for v in res:
+        db.session.add(Kpi(name=v[1], query=v[0], metrica_id=dhcpool.id))
+        db.session.commit()
+    
+
+
+    #Carregar métricas default e as suas Kpis   
+    node = DefaultMetrics(name='Node Storage', 
+    description="""Metric that represents the storage in bytes that's 
+    being used from the University of Aveiro's sereral server disks.""",
+    url="https://wso2-gw.ua.pt",
+    period=5,
+    status=True,
+    type="basic")
+    db.session.add(node)
+    db.session.commit()
+
+    res = get_querys('Node_Storage')
+    for v in res:
+        db.session.add(Kpi(name=v[1], query=v[0], metrica_id=node.id))
+        db.session.commit()
